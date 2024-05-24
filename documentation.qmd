@@ -1,0 +1,30 @@
+---
+title: ""
+subtitle: "2024 plotnine Contest"
+author: "Nicola Rennie"
+engine: knitr
+---
+
+# Prep 
+
+## Packages required
+
+```{python}
+import plotnine as gg
+import pandas as pd
+import numpy as np
+from string import Template
+```
+
+
+## Reading in data
+
+```{python}
+events = pd.read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2024/2024-02-27/events.csv')
+births = pd.read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2024/2024-02-27/births.csv')
+deaths = pd.read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2024/2024-02-27/deaths.csv')
+```
+
+# base plot
+
+# Styling
