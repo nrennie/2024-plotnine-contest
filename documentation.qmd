@@ -25,6 +25,8 @@ births = pd.read_csv('https://raw.githubusercontent.com/rfordatascience/tidytues
 deaths = pd.read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2024/2024-02-27/deaths.csv')
 ```
 
+alternatively, locally
+
 # base plot
 
 # Styling
