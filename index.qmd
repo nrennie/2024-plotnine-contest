@@ -2,6 +2,9 @@
 title: "Area charts with `plotnine`"
 subtitle: "2024 `plotnine` Contest"
 author: "Nicola Rennie"
+format:
+  html: 
+    theme: vapor
 ---
 
 In this tutorial, we'll be discussing how to create the following plot:
@@ -10,7 +13,9 @@ In this tutorial, we'll be discussing how to create the following plot:
 
 # Prep 
 
-## Packages required
+## Python libraries
+
+Let's start by installing the Python libraries that we'll need to create the plot. Beyond `plotnine` for creating the plot, we also need `pandas` for data wrangling, `textwrap` for wrapping long strings of text, `matplotlib.pyplot` for some additional plot tinkering, `highlight_text` for adding coloured and bold text to annotations, and `matplotlib.font_manager` for dealing with fonts.
 
 ```{python}
 import plotnine as gg
@@ -21,13 +26,18 @@ import highlight_text as ht
 import matplotlib.font_manager
 ```
 
-
 ## Reading in data
+
+The data set we'll be using is the *Carbon Majors* emissions data. This dataset was used as a #TidyTuesday dataset.  [github.com/rfordatascience/tidytuesday/blob/master/data/2024/2024-05-21/readme.md](https://github.com/rfordatascience/tidytuesday/blob/master/data/2024/2024-05-21/readme.md). A copy of the `emissions.csv` file is also stored in this repository in the `data` folder for preservation.
+
+We can read the data in directly from the #TidyTuesday GitHub repository:
 
 ```{python}
 emissions = pd.read_csv(
     'https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2024/2024-05-21/emissions.csv')
 ```
+
+also a copy ..
 
 ## Data wrangling
 
@@ -40,6 +50,9 @@ plot_data = emissions[
     ])
 ].copy()
 plot_data['commodity'] = plot_data['commodity'].str.replace(' Coal', '')
+```
+
+```{python}
 plot_data = plot_data[['year', 'commodity', 'production_value']]
 plot_data = plot_data.groupby(['year', 'commodity'], as_index=False).agg(
     {'production_value': 'sum'}).rename(columns={'production_value': 'n'})
