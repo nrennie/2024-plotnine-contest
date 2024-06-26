@@ -4,14 +4,15 @@ subtitle: "2024 `plotnine` Contest"
 author: "Nicola Rennie"
 format:
   html: 
-    theme: vapor
+    theme: solar
+    toc: true
 ---
 
 In this tutorial, we'll be discussing how to create the following plot:
 
 ![](plot.png)
 
-# Prep 
+# Preparing for plotting
 
 ## Python libraries
 
@@ -37,7 +38,7 @@ emissions = pd.read_csv(
     'https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2024/2024-05-21/emissions.csv')
 ```
 
-also a copy ..
+You can download the `emissions.csv` file from GitHub if you prefer to load the data from a local file. There's also a copy of the `emissions.csv` file in the [GitHub repository](https://github.com/nrennie/2024-plotnine-contest) for this tutorial, just in case.
 
 ## Data wrangling
 
@@ -86,7 +87,9 @@ y_axis_data = pd.DataFrame({
 ```
 
 
+## Colour, font, and text variables
 
+To make it easier to change up colour schemes, it's useful to define colours as variables. Here, we define a background colour (`bg_col`), a text colour (`text_col`), and a colour palette that will be used to colour the different areas.
 
 ```{python}
 # Define background colour, text colour, and colour palette
@@ -99,7 +102,11 @@ col_palette = [
     '#99C945',
     '#CC61B0',
     '#24796C']
+```
 
+Similarly, we can define variable(s) for which font we want to use. But we also need to make sure that the font we want is actually available. We can get a list of available fonts using `matplotlib.font_manager.findSystemFonts()`. If `'Arial'` is installed, we'll use that as the main font (`body_font`) and if not, we'll use the default sans serif font.
+
+```{python}
 # Check if 'Arial' in list of installed fonts
 flist = matplotlib.font_manager.findSystemFonts()
 names = [matplotlib.font_manager.FontProperties(
@@ -110,15 +117,22 @@ else:
     body_font = 'sans'
 ```
 
+> If you're running this code on your own laptop, feel free to choose a different font!
 
-
+Let's also create some variables to store our title and subtitle text. Although these could be passed straight into title and subtitle arguments in the plotting function, keeping them separated keeps the plotting code looking a little bit cleaner. The subtitle text is also quite long, so we'll use `textwrap.wrap()` to wrap the text to 50 characters (without breaking words onto multiple lines):
 
 ```{python}
 # title, subtitle
 title_text = 'Coal production since 1900'
 st = 'Carbon Majors is a database of historical production data from 122 of the world’s largest oil, gas, coal, and cement producers. This data is used to quantify the direct operational emissions and emissions from the combustion of marketed products that can be attributed to these entities.'
 wrapped_subtitle = '\n'.join(textwrap.wrap(st, width=50))
+```
 
+Instead of a traditional legend, we're going to use coloured text to show how which categories the different colours map to. 
+
+We also ... caption
+
+```{python}
 # annotation labels
 coal_types_label = 'Total coal production includes\nproduction of <Bituminous::{"color": "#E58606"}>,\n<Sub-bituminous::{"color": "#5D69B1"}>, <Metallurgical::{"color": "#52BCA3"}>,\n<Lignite::{"color": "#99C945"}>, <Anthracite::{"color": "#CC61B0"}>, and <Thermal::{"color": "#24796C"}>\ncoal. Bituminous accounts\nfor around half.'
 
@@ -126,7 +140,9 @@ coal_types_label = 'Total coal production includes\nproduction of <Bituminous::{
 cap = '<Data::{"fontweight": "bold"}>: Carbon Majors\n<Graphic::{"fontweight": "bold"}>: Nicola Rennie (@nrennie)'
 ```
 
+Now we're ready to plot!
 
+# Plotting with `plotnine`
 
 ```{python}
 p = (gg.ggplot(plot_data, gg.aes(x='year', y='n')) +
@@ -225,6 +241,7 @@ p = (gg.ggplot(plot_data, gg.aes(x='year', y='n')) +
 
 ```
 
+Unfortunately, there isn't currently a native way in `plotnine` to add coloured text through `highlight-text`, but we can just add it on top. 
 
 ```{python}
 # Add coloured text with matplotlib and highlight-text
@@ -246,6 +263,4 @@ ht.ax_text(1900, -2300, cap, color=text_col,
 plt.show()
 ```
 
-
-
-
+Check out the [`plotnine` Gallery](https://plotnine.org/gallery/) for more examples of plots created using `plotnine`!
