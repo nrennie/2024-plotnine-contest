@@ -139,7 +139,7 @@ If `'Arial'` is installed, we'll use that as the main font (`body_font`) and if 
 ```{python}
 # Check if 'Arial' in list of installed fonts
 flist = ''.join(flist).lower()
-if 'arial' in names:
+if 'arial' in flist:
     body_font = 'Arial'
 else:
     body_font = 'sans'

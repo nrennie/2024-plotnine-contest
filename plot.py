@@ -67,9 +67,8 @@ col_palette = [
 
 # Check if 'Arial' in list of installed fonts
 flist = matplotlib.font_manager.findSystemFonts()
-names = [matplotlib.font_manager.FontProperties(
-    fname=fname).get_name() for fname in flist]
-if 'Arial' in names:
+flist = ''.join(flist).lower()
+if 'arial' in flist:
     body_font = 'Arial'
 else:
     body_font = 'sans'
