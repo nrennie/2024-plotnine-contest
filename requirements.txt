@@ -2,3 +2,4 @@ highlight-text==0.2
 matplotlib==3.5.2
 numpy==1.22.4
 pandas==1.4.2
+plotnine==0.10.1
