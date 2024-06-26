@@ -1,6 +1,6 @@
 ---
-title: "Area charts with `plotnine`"
-subtitle: "2024 `plotnine` Contest"
+title: "Annotated area charts"
+subtitle: "A visualisation of coal production data for the 2024 `plotnine` contest"
 author: "Nicola Rennie"
 format:
   html: 
@@ -12,6 +12,7 @@ format:
 [Plotnine](https://plotnine.org/) is a visualisation library that brings the Grammar of Graphics to Python, and the [2024 Plotnine Contest](https://posit.co/blog/announcing-the-2024-plotnine-contest/) aims to bring the community together to create and share with others great `plotnine` examples! In this tutorial, I'll be walking you through the process of creating the following plot for my entry into the `plotnine` contest!
 
 ![](plot.png)
+
 This entry for the `plotnine` contest was inspired by a visualisation I previously created using `{ggplot2}` in R for [#TidyTuesday](https://github.com/rfordatascience/tidytuesday/blob/master/data/2024/2024-05-21/readme.md). You can see the original R version at [github.com/nrennie/tidytuesday/tree/main/2024/2024-05-21](https://github.com/nrennie/tidytuesday/tree/main/2024/2024-05-21).
 
 # Preparing for plotting
@@ -189,7 +190,17 @@ p = (gg.ggplot(plot_data, gg.aes(x='year', y='n')) +
      gg.geom_text(data=segment_data, mapping=gg.aes(x='year', y=-1900, label='year'),
                   color=text_col, size=8, family=body_font, ha='left') +
      gg.geom_text(data=y_axis_data, mapping=gg.aes(x=2023, y='value', label='label'),
-                  color=text_col, size=8, family=body_font, ha='left', va='top') +
+                  color=text_col, size=8, family=body_font, ha='left', va='top'))
+```
+
+```{python}
+#| echo: false
+#| eval: true
+p + gg.theme(figure_size = (8, 6))
+```
+
+```{python}
+p = (p +
      # Annotation 1
      gg.annotate(
          'segment',
@@ -237,7 +248,19 @@ p = (gg.ggplot(plot_data, gg.aes(x='year', y='n')) +
          va='top',
          size=10,
          fontweight='bold'
-) +
+))
+```
+
+```{python}
+#| echo: false
+#| eval: true
+p + gg.theme(figure_size = (8, 6))
+```
+
+Let's finally add the area chart!
+
+```{python}
+p = (p +
     # Area plot
     gg.geom_area(gg.aes(fill='commodity')) +
     # Scales
@@ -265,7 +288,19 @@ p = (gg.ggplot(plot_data, gg.aes(x='year', y='n')) +
          size=9.5,
          ha='left',
          va='top'
-) +
+))
+```
+
+```{python}
+#| echo: false
+#| eval: true
+p + gg.theme(figure_size = (8, 6))
+```
+
+Let's add some final styling with `plotnine` by trimming the white space between the plot and the axis using `coord_cartesian(expand=False)`. In `plotnine` (and {ggplot2} in R) themese are used to control the styling of all non-data related elements e.g. the background colour, the grid lines, and so on. We add `theme_void()` to remove all axes, gridlines, and unwanted text. Then we add a little bit more styling using different arguments of `theme()` where we remove the legend, and set the background colour to the variable we defined earlier. Note that the background elements use `element_rect` since the background is essentially just a big rectangle!
+
+```{python}
+p = (p +
     # Styling
     gg.coord_cartesian(expand=False) +
     gg.theme_void(base_size=8) +
@@ -274,7 +309,6 @@ p = (gg.ggplot(plot_data, gg.aes(x='year', y='n')) +
          plot_background=gg.element_rect(fill=bg_col, color=bg_col),
          panel_background=gg.element_rect(fill=bg_col, color=bg_col)
 ))
-
 ```
 
 Here's what our plot looks like now:
