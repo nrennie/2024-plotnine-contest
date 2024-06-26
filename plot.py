@@ -29,6 +29,14 @@ plot_data = plot_data.groupby(['year', 'commodity'], as_index=False).agg(
     {'production_value': 'sum'}).rename(columns={'production_value': 'n'})
 plot_data = plot_data[plot_data['year'] >= 1900]
 
+# Sort values by 2022 levels
+orders = plot_data[plot_data['year'] == 2022].sort_values(
+    by='n', ascending=False)['commodity']
+plot_data['commodity'] = pd.Categorical(
+    plot_data['commodity'],
+    categories=orders,
+    ordered=True)
+
 # Values for annotations
 exceeds100 = plot_data.groupby('year')['n'].sum()
 exceeds100 = exceeds100[exceeds100 > 100].index.min()
@@ -183,6 +191,6 @@ ht.ax_text(
     va='top')
 ht.ax_text(1900, -2300, cap, color=text_col,
            fontname=body_font, fontsize=7.5, va='top')
-           
+
 # Save image
 plt.savefig('plot.png', dpi=300, bbox_inches='tight')
