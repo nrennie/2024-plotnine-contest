@@ -6,6 +6,7 @@ import pandas as pd
 import textwrap
 import matplotlib.pyplot as plt
 import highlight_text as ht
+import matplotlib.font_manager
 
 
 # Load data ---------------------------------------------------------------
@@ -53,6 +54,7 @@ y_axis_data = pd.DataFrame({
 
 # Define colours and fonts-------------------------------------------------
 
+# Define background colour, text colour, and colour palette
 bg_col = '#FFFFFA'
 text_col = '#0D5C63'
 col_palette = [
@@ -63,14 +65,22 @@ col_palette = [
     '#CC61B0',
     '#24796C']
 
-body_font = 'Arial'
+# Check if 'Arial' in list of installed fonts
+flist = matplotlib.font_manager.findSystemFonts()
+names = [matplotlib.font_manager.FontProperties(
+    fname=fname).get_name() for fname in flist]
+if 'Arial' in names:
+    body_font = 'Arial'
+else:
+    body_font = 'sans'
+
 
 # Define text -------------------------------------------------------------
 
 # title, subtitle
 title_text = 'Coal production since 1900'
 st = 'Carbon Majors is a database of historical production data from 122 of the world’s largest oil, gas, coal, and cement producers. This data is used to quantify the direct operational emissions and emissions from the combustion of marketed products that can be attributed to these entities.'
-wrapped_subtitle = '\n'.join(textwrap.wrap(st, width=52))
+wrapped_subtitle = '\n'.join(textwrap.wrap(st, width=50))
 
 # annotation labels
 coal_types_label = 'Total coal production includes\nproduction of <Bituminous::{"color": "#E58606"}>,\n<Sub-bituminous::{"color": "#5D69B1"}>, <Metallurgical::{"color": "#52BCA3"}>,\n<Lignite::{"color": "#99C945"}>, <Anthracite::{"color": "#CC61B0"}>, and <Thermal::{"color": "#24796C"}>\ncoal. Bituminous accounts\nfor around half.'
