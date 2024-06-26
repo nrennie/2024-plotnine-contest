@@ -9,7 +9,7 @@ format:
     highlight-style: pygments
 ---
 
-`plotnine`is a visualisation library that brings the Grammar of Graphics to Python, and the [2024 Plotnine Contest](https://posit.co/blog/announcing-the-2024-plotnine-contest/) aims to bring the community together to create and share with others great `plotnine` examples! In this tutorial, I'll be walking you through the process of creating the following plot for my entry into the `plotnine` contest!
+[Plotnine](https://plotnine.org/) is a visualisation library that brings the Grammar of Graphics to Python, and the [2024 Plotnine Contest](https://posit.co/blog/announcing-the-2024-plotnine-contest/) aims to bring the community together to create and share with others great `plotnine` examples! In this tutorial, I'll be walking you through the process of creating the following plot for my entry into the `plotnine` contest!
 
 ![](plot.png)
 This entry for the `plotnine` contest was inspired by a visualisation I previously created using `{ggplot2}` in R for [#TidyTuesday](https://github.com/rfordatascience/tidytuesday/blob/master/data/2024/2024-05-21/readme.md). You can see the original R version at [github.com/nrennie/tidytuesday/tree/main/2024/2024-05-21](https://github.com/nrennie/tidytuesday/tree/main/2024/2024-05-21).
@@ -33,18 +33,20 @@ import matplotlib.font_manager
 
 ## Reading in data
 
-The data set we'll be using is the *Carbon Majors* emissions data. This dataset was used as a #TidyTuesday dataset.  [github.com/rfordatascience/tidytuesday/blob/master/data/2024/2024-05-21/readme.md](https://github.com/rfordatascience/tidytuesday/blob/master/data/2024/2024-05-21/readme.md). A copy of the `emissions.csv` file is also stored in this repository in the `data` folder for preservation.
-
-We can read the data in directly from the #TidyTuesday GitHub repository:
+The data set we'll be using is the *Carbon Majors* emissions data. As I mentioned earlier, this dataset is used as a [#TidyTuesday dataset](https://github.com/rfordatascience/tidytuesday/blob/master/data/2024/2024-05-21/readme.md). This means we can read the data in directly from the #TidyTuesday GitHub repository:
 
 ```{python}
 emissions = pd.read_csv(
     'https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2024/2024-05-21/emissions.csv')
 ```
 
-You can download the `emissions.csv` file from GitHub if you prefer to load the data from a local file. There's also a copy of the `emissions.csv` file in the [GitHub repository](https://github.com/nrennie/2024-plotnine-contest) for this tutorial, just in case.
+You can download the `emissions.csv` file from GitHub if you prefer to load the data from a local file. There's also a copy of the `emissions.csv` file in the `data` folder of the [GitHub repository](https://github.com/nrennie/2024-plotnine-contest) for this tutorial - just in case!
+
+Carbon Majors is a database of historical production data from 122 of the world’s largest oil, gas, coal, and cement producers. The dataset has 12,551 rows and 7 columsn with the following variables: `year`, `parent_entity`, `parent_type`, `commodity`, `production_value`, `production_unit`, and `total_emissions_MtCO2e`. The #TidyTuesday [README](https://github.com/rfordatascience/tidytuesday/blob/master/data/2024/2024-05-21/readme.md#emissionscsv) file has more information on what the variables are.
 
 ## Data wrangling
+
+For this plot, let's focus on emissions relating to coal only, There are six different types of coal in the data set and we'll filter the rows to keep only rows relating to those six types of coal. We'll also remove the word `"Coal"` from each of the category labels since it will be obvious they are types of coal.
 
 ```{python}
 # Prep data for plotting
@@ -57,12 +59,20 @@ plot_data = emissions[
 plot_data['commodity'] = plot_data['commodity'].str.replace(' Coal', '')
 ```
 
+We'll also focus on production levels, so we'll keep only the columns we need to plot: year, type of coal (`commodity`), and amount produced (`production_value`). The data README tells us that the `production_value` column is given in million tonnes for coal production.
+
+We also need to sum up production across the different entities to get a total production value per year. We'll also filter the data to consider only the years since 1900:
+
 ```{python}
 plot_data = plot_data[['year', 'commodity', 'production_value']]
 plot_data = plot_data.groupby(['year', 'commodity'], as_index=False).agg(
     {'production_value': 'sum'}).rename(columns={'production_value': 'n'})
 plot_data = plot_data[plot_data['year'] >= 1900]
+```
 
+Let's also sort the categories based on their production amount in the last year of the data (2022), to make out plot a little bit clearer:
+
+```{python}
 # Sort values by 2022 levels
 orders = plot_data[plot_data['year'] == 2022].sort_values(
     by='n', ascending=False)['commodity']
@@ -72,6 +82,7 @@ plot_data['commodity'] = pd.Categorical(
     ordered=True)
 ```
 
+We're going to be adding some annotations to the plot, and one of the annotations will show the first year that production exceeded 100 million tonnes per year. Let's calculate that year (and therefore the position of the annotation) in a data-driven way:
 
 ```{python}
 # Values for annotations
@@ -79,17 +90,24 @@ exceeds100 = plot_data.groupby('year')['n'].sum()
 exceeds100 = exceeds100[exceeds100 > 100].index.min()
 ```
 
+I often find that traditional grid lines make a plot look a little bit too *busy*. Instead, we're going to create our own *grid lines* by drawing some vertical lines. To do this, let's create some data with the desired positions of where the vertical lines hit the x-axis:
+
 ```{python}
 # Create data for x-axis labels
 segment_data = pd.DataFrame({
     'year': list(range(1900, 2021, 20))
 })
+```
+
+We'll do something similar with the y-axis, by creating custom labels that encompass both the values and the units - rather than having a separate y-axis title. We'll put these values on the right hand side of the plot (rather than the left as normal) because this is often where people's eyes end up looking when they're reading a chart of data over time.
+
+```{python}
+# y-axis labels
 y_axis_data = pd.DataFrame({
     'value': [0, 2000, 4000, 6000, 8000],
     'label': ['0', '2,000', '4,000', '6,000', '8,000\nmillion\ntonnes']
 })
 ```
-
 
 ## Colour, font, and text variables
 
@@ -144,10 +162,11 @@ Instead of a traditional legend, we're going to use coloured text to show how wh
 We create a string as normal with the text we want to display, then format words within the strings in the following way:
 
 ```{python}
+#| eval: false
 'Normal text then <coloured text::{"color": "red"}>'
 ```
 
-Instead, of `"red"` we can use our different hex colours. We'll also add some text formatting to the caption in a similar way. Instead of colouring the text, we'll make some of it bold. Therefore, we use `"fontweight": "bold"` instead of `"color": "red"`:
+Instead, of `"red"` we can use our different hex colours. We also add line breaks using `\n`. We'll also add some text formatting to the caption in a similar way. Instead of colouring the text, we'll make some of it bold. Therefore, we use `"fontweight": "bold"` instead of `"color": "red"`:
 
 ```{python}
 # annotation labels
@@ -261,7 +280,9 @@ p = (gg.ggplot(plot_data, gg.aes(x='year', y='n')) +
 Here's what our plot looks like now:
 
 ```{python}
-p
+#| echo: false
+#| eval: true
+p + gg.theme(figure_size = (8, 6))
 ```
 
 We still need to add the caption, and the coloured text as an alternative to a traditional legend. Unfortunately, there isn't currently a native way in `plotnine` to add coloured text through `highlight-text`, but we can just add it on top directly. 
@@ -288,7 +309,7 @@ ht.ax_text(1900, -2300, cap, color=text_col,
 plt.show()
 ```
 
-If you want to save as a PNG, you can use `plt.savefig()`:
+If you want to save our plot to a file, we can use `plt.savefig()` and specify the resolution and `bbox_inches='tight'` to avoid any extra whitespace around the edges of the plot.
 
 ```{python}
 #| eval: false
