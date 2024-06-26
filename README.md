@@ -6,9 +6,9 @@ This repository contains code for my entry in the [2024 Plotnine Contest](https:
 
 ## Code
 
-The code to reproduce the figure can be found in `plot.py`, and a more detailed tutorial can be found in the `documentation.qmd` file which is deployed at [nrennie.github.io/2024-plotnine-contest](https://nrennie.github.io/2024-plotnine-contest).
+The code to reproduce the figure can be found in `plot.py`, and the source code for a more detailed tutorial can be found in the `index.qmd` file which is deployed at [nrennie.github.io/2024-plotnine-contest](https://nrennie.github.io/2024-plotnine-contest). This site is deployed with GitHub Actions, demonstrating that the plot is fully reproducible.
 
-This entry for the `plotnine` contest was inspired by a visualisation I previously created using `{ggplot2}` in R for #TidyTuesday. You can see the original R version at [github.com/nrennie/tidytuesday/tree/main/2024/2024-05-21](https://github.com/nrennie/tidytuesday/tree/main/2024/2024-05-21).
+This entry for the `plotnine` contest was inspired by a visualisation I previously created using `{ggplot2}` in R for [#TidyTuesday](https://github.com/rfordatascience/tidytuesday/blob/master/data/2024/2024-05-21/readme.md). You can see the original R version at [github.com/nrennie/tidytuesday/tree/main/2024/2024-05-21](https://github.com/nrennie/tidytuesday/tree/main/2024/2024-05-21).
 
 ## Data 
 

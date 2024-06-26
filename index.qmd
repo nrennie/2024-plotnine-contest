@@ -4,6 +4,10 @@ subtitle: "2024 `plotnine` Contest"
 author: "Nicola Rennie"
 ---
 
+In this tutorial, we'll be discussing how to create the following plot:
+
+![](plot.png)
+
 # Prep 
 
 ## Packages required
