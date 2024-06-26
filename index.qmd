@@ -130,11 +130,10 @@ col_palette = [
 Similarly, we can define variable(s) for which font we want to use. But we also need to make sure that the font we want is actually available. We can get a list of available fonts using `matplotlib.font_manager.findSystemFonts()`. 
 
 ```{python}
-#| eval: false
 # Check if 'Arial' in list of installed fonts
 flist = matplotlib.font_manager.findSystemFonts()
-names = [matplotlib.font_manager.FontProperties(
-    fname=fname).get_name() for fname in flist]
+# names = [matplotlib.font_manager.FontProperties(
+#     fname=fname).get_name() for fname in flist]
 ```
 
 If `'Arial'` is installed, we'll use that as the main font (`body_font`) and if not, we'll use the default sans serif font.
