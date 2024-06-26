@@ -4,19 +4,23 @@ subtitle: "2024 `plotnine` Contest"
 author: "Nicola Rennie"
 format:
   html: 
-    theme: solar
+    theme: lux
     toc: true
+    highlight-style: pygments
 ---
 
-In this tutorial, we'll be discussing how to create the following plot:
+`plotnine`is a visualisation library that brings the Grammar of Graphics to Python, and the [2024 Plotnine Contest](https://posit.co/blog/announcing-the-2024-plotnine-contest/) aims to bring the community together to create and share with others great `plotnine` examples! In this tutorial, I'll be walking you through the process of creating the following plot for my entry into the `plotnine` contest!
 
 ![](plot.png)
+This entry for the `plotnine` contest was inspired by a visualisation I previously created using `{ggplot2}` in R for [#TidyTuesday](https://github.com/rfordatascience/tidytuesday/blob/master/data/2024/2024-05-21/readme.md). You can see the original R version at [github.com/nrennie/tidytuesday/tree/main/2024/2024-05-21](https://github.com/nrennie/tidytuesday/tree/main/2024/2024-05-21).
 
 # Preparing for plotting
 
+Before we dive into plotting, we need to get some data and tidy it up!
+
 ## Python libraries
 
-Let's start by installing the Python libraries that we'll need to create the plot. Beyond `plotnine` for creating the plot, we also need `pandas` for data wrangling, `textwrap` for wrapping long strings of text, `matplotlib.pyplot` for some additional plot tinkering, `highlight_text` for adding coloured and bold text to annotations, and `matplotlib.font_manager` for dealing with fonts.
+Let's start by loading the Python libraries that we'll need to create the plot. Beyond `plotnine` for actually plotting, we also need `pandas` for data wrangling, `textwrap` for wrapping long strings of text, `matplotlib.pyplot` for some additional plot tinkering, `highlight_text` for adding coloured and bold text to annotations, and `matplotlib.font_manager` for dealing with fonts.
 
 ```{python}
 import plotnine as gg
@@ -135,9 +139,15 @@ st = 'Carbon Majors is a database of historical production data from 122 of the 
 wrapped_subtitle = '\n'.join(textwrap.wrap(st, width=50))
 ```
 
-Instead of a traditional legend, we're going to use coloured text to show how which categories the different colours map to. 
+Instead of a traditional legend, we're going to use coloured text to show how which categories the different colours map to. We're going to prepare some text that we'll use later in functions from the `highlight-text` library. 
 
-We also ... caption
+We create a string as normal with the text we want to display, then format words within the strings in the following way:
+
+```{python}
+'Normal text then <coloured text::{"color": "red"}>'
+```
+
+Instead, of `"red"` we can use our different hex colours. We'll also add some text formatting to the caption in a similar way. Instead of colouring the text, we'll make some of it bold. Therefore, we use `"fontweight": "bold"` instead of `"color": "red"`:
 
 ```{python}
 # annotation labels
@@ -248,7 +258,15 @@ p = (gg.ggplot(plot_data, gg.aes(x='year', y='n')) +
 
 ```
 
-Unfortunately, there isn't currently a native way in `plotnine` to add coloured text through `highlight-text`, but we can just add it on top. 
+Here's what our plot looks like now:
+
+```{python}
+p
+```
+
+We still need to add the caption, and the coloured text as an alternative to a traditional legend. Unfortunately, there isn't currently a native way in `plotnine` to add coloured text through `highlight-text`, but we can just add it on top directly. 
+
+## Applying text styling with `highlight-text`
 
 ```{python}
 # Add coloured text with matplotlib and highlight-text
@@ -268,6 +286,14 @@ ht.ax_text(
 ht.ax_text(1900, -2300, cap, color=text_col,
            fontname=body_font, fontsize=7.5, va='top')
 plt.show()
+```
+
+If you want to save as a PNG, you can use `plt.savefig()`:
+
+```{python}
+#| eval: false
+# Save image
+plt.savefig('plot.png', dpi=300, bbox_inches='tight')
 ```
 
 Check out the [`plotnine` Gallery](https://plotnine.org/gallery/) for more examples of plots created using `plotnine`!
