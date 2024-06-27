@@ -18,6 +18,7 @@ emissions = pd.read_csv(
 # Data wrangling ----------------------------------------------------------
 
 # Prep data for plotting
+# Select only types of coal, then remove word 'Coal'
 plot_data = emissions[
     emissions['commodity'].isin([
         'Sub-Bituminous Coal', 'Metallurgical Coal', 'Bituminous Coal',
@@ -25,7 +26,11 @@ plot_data = emissions[
     ])
 ].copy()
 plot_data['commodity'] = plot_data['commodity'].str.replace(' Coal', '')
+
+# Keep only relevant columns
 plot_data = plot_data[['year', 'commodity', 'production_value']]
+
+# Total production per year since 1900
 plot_data = plot_data.groupby(['year', 'commodity'], as_index=False).agg(
     {'production_value': 'sum'}).rename(columns={'production_value': 'n'})
 plot_data = plot_data[plot_data['year'] >= 1900]
@@ -46,6 +51,8 @@ exceeds100 = exceeds100[exceeds100 > 100].index.min()
 segment_data = pd.DataFrame({
     'year': list(range(1900, 2021, 20))
 })
+
+# Create data for y-axis labels
 y_axis_data = pd.DataFrame({
     'value': [0, 2000, 4000, 6000, 8000],
     'label': ['0', '2,000', '4,000', '6,000', '8,000\nmillion\ntonnes']
@@ -65,8 +72,10 @@ col_palette = [
     '#CC61B0',
     '#24796C']
 
-# Check if 'Arial' in list of installed fonts
+# Get list of available fonts
 flist = matplotlib.font_manager.findSystemFonts()
+
+# Check if 'Arial' in list of installed fonts
 flist = ''.join(flist).lower()
 if 'arial' in flist:
     body_font = 'Arial'
@@ -185,10 +194,13 @@ p = (gg.ggplot(plot_data, gg.aes(x='year', y='n')) +
 ))
 
 # Add coloured text with matplotlib and highlight-text
+# Set up plot options
 fig = p.draw()
 fig.set_size_inches(8, 6, forward=True)
 fig.set_dpi(300)
 ax = plt.gca()
+
+# Add coloured text annotation
 ht.ax_text(
     1977,
     9400,
@@ -198,6 +210,8 @@ ht.ax_text(
     fontname=body_font,
     fontsize=9,
     va='top')
+    
+# Add caption
 ht.ax_text(1900, -2300, cap, color=text_col,
            fontname=body_font, fontsize=7.5, va='top')
 
