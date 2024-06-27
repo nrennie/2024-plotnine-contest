@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.4.556">
+<meta name="generator" content="quarto-1.4.557">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -34,7 +34,7 @@ div.sourceCode { overflow: auto; }
 }
 @media print {
 pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
 }
 pre.numberSource code
   { counter-reset: source-line 0; }
@@ -124,14 +124,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <p><a href="https://plotnine.org/">Plotnine</a> is a visualisation library that brings the Grammar of Graphics to Python, and the <a href="https://posit.co/blog/announcing-the-2024-plotnine-contest/">2024 Plotnine Contest</a> aims to bring the community together to create and share with others great <code>plotnine</code> examples! In this tutorial, I’ll be walking you through the process of creating the following plot for my entry into the <code>plotnine</code> contest!</p>
 <p><img src="plot.png" class="img-fluid"></p>
-<p>This entry for the <code>plotnine</code> contest was inspired by a visualisation I previously created using <code>{ggplot2}</code> in R for <a href="https://github.com/rfordatascience/tidytuesday/blob/master/data/2024/2024-05-21/readme.md">#TidyTuesday</a>. You can see the original R version at <a href="https://github.com/nrennie/tidytuesday/tree/main/2024/2024-05-21">github.com/nrennie/tidytuesday/tree/main/2024/2024-05-21</a>.</p>
+<p>This entry for the <code>plotnine</code> contest was inspired by a visualisation I previously created using <code>{ggplot2}</code> in R for <a href="https://github.com/rfordatascience/tidytuesday/blob/master/data/2024/2024-05-21/readme.md">#TidyTuesday</a>. You can see the original R version on <a href="https://github.com/nrennie/tidytuesday/tree/main/2024/2024-05-21">GitHub</a>.</p>
 <section id="preparing-for-plotting" class="level1">
 <h1>Preparing for plotting</h1>
 <p>Before we dive into plotting, we need to get some data and tidy it up!</p>
 <section id="python-libraries" class="level2">
 <h2 class="anchored" data-anchor-id="python-libraries">Python libraries</h2>
 <p>Let’s start by loading the Python libraries that we’ll need to create the plot. Beyond <code>plotnine</code> for actually plotting, we also need <code>pandas</code> for data wrangling, <code>textwrap</code> for wrapping long strings of text, <code>matplotlib.pyplot</code> for some additional plot tinkering, <code>highlight_text</code> for adding coloured and bold text to annotations, and <code>matplotlib.font_manager</code> for dealing with fonts.</p>
-<div id="6a2b2a5f" class="cell" data-execution_count="1">
+<div id="1332cf93" class="cell" data-execution_count="1">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> plotnine <span class="im">as</span> gg</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> textwrap</span>
@@ -143,17 +143,17 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="reading-in-data" class="level2">
 <h2 class="anchored" data-anchor-id="reading-in-data">Reading in data</h2>
 <p>The data set we’ll be using is the <em>Carbon Majors</em> emissions data. As I mentioned earlier, this dataset is used as a <a href="https://github.com/rfordatascience/tidytuesday/blob/master/data/2024/2024-05-21/readme.md">#TidyTuesday dataset</a>. This means we can read the data in directly from the #TidyTuesday GitHub repository:</p>
-<div id="4d055832" class="cell" data-execution_count="2">
+<div id="bee67e28" class="cell" data-execution_count="2">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>emissions <span class="op">=</span> pd.read_csv(</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">'https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2024/2024-05-21/emissions.csv'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>You can download the <code>emissions.csv</code> file from GitHub if you prefer to load the data from a local file. There’s also a copy of the <code>emissions.csv</code> file in the <code>data</code> folder of the <a href="https://github.com/nrennie/2024-plotnine-contest">GitHub repository</a> for this tutorial - just in case!</p>
-<p>Carbon Majors is a database of historical production data from 122 of the world’s largest oil, gas, coal, and cement producers. The dataset has 12,551 rows and 7 columsn with the following variables: <code>year</code>, <code>parent_entity</code>, <code>parent_type</code>, <code>commodity</code>, <code>production_value</code>, <code>production_unit</code>, and <code>total_emissions_MtCO2e</code>. The #TidyTuesday <a href="https://github.com/rfordatascience/tidytuesday/blob/master/data/2024/2024-05-21/readme.md#emissionscsv">README</a> file has more information on what the variables are.</p>
+<p>Carbon Majors is a database of historical production data from 122 of the world’s largest oil, gas, coal, and cement producers. The dataset has 12,551 rows and 7 columns with the following variables: <code>year</code>, <code>parent_entity</code>, <code>parent_type</code>, <code>commodity</code>, <code>production_value</code>, <code>production_unit</code>, and <code>total_emissions_MtCO2e</code>. The #TidyTuesday <a href="https://github.com/rfordatascience/tidytuesday/blob/master/data/2024/2024-05-21/readme.md#emissionscsv">README</a> file has more information on what the variables are.</p>
 </section>
 <section id="data-wrangling" class="level2">
 <h2 class="anchored" data-anchor-id="data-wrangling">Data wrangling</h2>
-<p>For this plot, let’s focus on emissions relating to coal only, There are six different types of coal in the data set and we’ll filter the rows to keep only rows relating to those six types of coal. We’ll also remove the word <code>"Coal"</code> from each of the category labels since it will be obvious they are types of coal.</p>
-<div id="3e5ad454" class="cell" data-execution_count="3">
+<p>For this plot, let’s focus on emissions relating to coal only, There are six different types of coal in the data set and we’ll filter the data to keep only rows relating to those six types of coal. We’ll also remove the word <code>"Coal"</code> from each of the category labels since it will be obvious they are types of coal.</p>
+<div id="1c59e806" class="cell" data-execution_count="3">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Prep data for plotting</span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>plot_data <span class="op">=</span> emissions[</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    emissions[<span class="st">'commodity'</span>].isin([</span>
@@ -165,14 +165,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 <p>We’ll also focus on production levels, so we’ll keep only the columns we need to plot: year, type of coal (<code>commodity</code>), and amount produced (<code>production_value</code>). The data README tells us that the <code>production_value</code> column is given in million tonnes for coal production.</p>
 <p>We also need to sum up production across the different entities to get a total production value per year. We’ll also filter the data to consider only the years since 1900:</p>
-<div id="ba825a06" class="cell" data-execution_count="4">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>plot_data <span class="op">=</span> plot_data[[<span class="st">'year'</span>, <span class="st">'commodity'</span>, <span class="st">'production_value'</span>]]</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>plot_data <span class="op">=</span> plot_data.groupby([<span class="st">'year'</span>, <span class="st">'commodity'</span>], as_index<span class="op">=</span><span class="va">False</span>).agg(</span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    {<span class="st">'production_value'</span>: <span class="st">'sum'</span>}).rename(columns<span class="op">=</span>{<span class="st">'production_value'</span>: <span class="st">'n'</span>})</span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>plot_data <span class="op">=</span> plot_data[plot_data[<span class="st">'year'</span>] <span class="op">&gt;=</span> <span class="dv">1900</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="e24026d3" class="cell" data-execution_count="4">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Total production per year since 1900</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>plot_data <span class="op">=</span> plot_data[[<span class="st">'year'</span>, <span class="st">'commodity'</span>, <span class="st">'production_value'</span>]]</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>plot_data <span class="op">=</span> plot_data.groupby([<span class="st">'year'</span>, <span class="st">'commodity'</span>], as_index<span class="op">=</span><span class="va">False</span>).agg(</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    {<span class="st">'production_value'</span>: <span class="st">'sum'</span>}).rename(columns<span class="op">=</span>{<span class="st">'production_value'</span>: <span class="st">'n'</span>})</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>plot_data <span class="op">=</span> plot_data[plot_data[<span class="st">'year'</span>] <span class="op">&gt;=</span> <span class="dv">1900</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>Let’s also sort the categories based on their production amount in the last year of the data (2022), to make out plot a little bit clearer:</p>
-<div id="cd796a0f" class="cell" data-execution_count="5">
+<p>Let’s also sort the categories based on their production amount in the last year of the data (2022), to make our plot a little bit clearer:</p>
+<div id="f546cbb7" class="cell" data-execution_count="5">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Sort values by 2022 levels</span></span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>orders <span class="op">=</span> plot_data[plot_data[<span class="st">'year'</span>] <span class="op">==</span> <span class="dv">2022</span>].sort_values(</span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    by<span class="op">=</span><span class="st">'n'</span>, ascending<span class="op">=</span><span class="va">False</span>)[<span class="st">'commodity'</span>]</span>
@@ -182,20 +183,23 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>    ordered<span class="op">=</span><span class="va">True</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>We’re going to be adding some annotations to the plot, and one of the annotations will show the first year that production exceeded 100 million tonnes per year. Let’s calculate that year (and therefore the position of the annotation) in a data-driven way:</p>
-<div id="c0a861b3" class="cell" data-execution_count="6">
+<div id="1b8a2710" class="cell" data-execution_count="6">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Values for annotations</span></span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>exceeds100 <span class="op">=</span> plot_data.groupby(<span class="st">'year'</span>)[<span class="st">'n'</span>].<span class="bu">sum</span>()</span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>exceeds100 <span class="op">=</span> exceeds100[exceeds100 <span class="op">&gt;</span> <span class="dv">100</span>].index.<span class="bu">min</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>I often find that traditional grid lines make a plot look a little bit too <em>busy</em>. Instead, we’re going to create our own <em>grid lines</em> by drawing some vertical lines. To do this, let’s create some data with the desired positions of where the vertical lines hit the x-axis:</p>
-<div id="ed17275c" class="cell" data-execution_count="7">
+<div id="36bb0d4f" class="cell" data-execution_count="7">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create data for x-axis labels</span></span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>segment_data <span class="op">=</span> pd.DataFrame({</span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">'year'</span>: <span class="bu">list</span>(<span class="bu">range</span>(<span class="dv">1900</span>, <span class="dv">2021</span>, <span class="dv">20</span>))</span>
 <span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>})</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>We’ll do something similar with the y-axis, by creating custom labels that encompass both the values and the units - rather than having a separate y-axis title. We’ll put these values on the right hand side of the plot (rather than the left as normal) because this is often where people’s eyes end up looking when they’re reading a chart of data over time.</p>
-<div id="0d6bf4c9" class="cell" data-execution_count="8">
+<p>We’ll do something similar with the y-axis, by creating custom labels that encompass both the values and the units, instead of having a separate y-axis title. We’ll put these values on the right hand side of the plot (rather than the left as normal) because this is often where people’s eyes end up looking when they’re reading a chart of data over time.</p>
+<blockquote class="blockquote">
+<p>Note the <code>\n</code> creates a linebreak in the text.</p>
+</blockquote>
+<div id="b1a8b7f3" class="cell" data-execution_count="8">
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># y-axis labels</span></span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>y_axis_data <span class="op">=</span> pd.DataFrame({</span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">'value'</span>: [<span class="dv">0</span>, <span class="dv">2000</span>, <span class="dv">4000</span>, <span class="dv">6000</span>, <span class="dv">8000</span>],</span>
@@ -205,8 +209,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="colour-font-and-text-variables" class="level2">
 <h2 class="anchored" data-anchor-id="colour-font-and-text-variables">Colour, font, and text variables</h2>
-<p>To make it easier to change up colour schemes, it’s useful to define colours as variables. Here, we define a background colour (<code>bg_col</code>), a text colour (<code>text_col</code>), and a colour palette that will be used to colour the different areas.</p>
-<div id="4e4874a0" class="cell" data-execution_count="9">
+<p>To make it easier to change up colour schemes, it’s useful to define colours as variables. Here, we define a background colour (<code>bg_col</code>), a text colour (<code>text_col</code>), and a colour palette (<code>col_palette</code>) that will be used to colour the different areas.</p>
+<div id="b2c9da59" class="cell" data-execution_count="9">
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Define background colour, text colour, and colour palette</span></span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>bg_col <span class="op">=</span> <span class="st">'#FFFFFA'</span></span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>text_col <span class="op">=</span> <span class="st">'#0D5C63'</span></span>
@@ -219,12 +223,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>    <span class="st">'#24796C'</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Similarly, we can define variable(s) for which font we want to use. But we also need to make sure that the font we want is actually available. We can get a list of available fonts using <code>matplotlib.font_manager.findSystemFonts()</code>.</p>
-<div id="fd96cb87" class="cell" data-execution_count="10">
+<div id="89326def" class="cell" data-execution_count="10">
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Available fonts</span></span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>flist <span class="op">=</span> matplotlib.font_manager.findSystemFonts()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>If <code>'Arial'</code> is installed, we’ll use that as the main font (<code>body_font</code>) and if not, we’ll use the default sans serif font.</p>
-<div id="da01bcc6" class="cell" data-execution_count="11">
+<div id="6a42766a" class="cell" data-execution_count="11">
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Check if 'Arial' in list of installed fonts</span></span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>flist <span class="op">=</span> <span class="st">''</span>.join(flist).lower()</span>
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="st">'arial'</span> <span class="kw">in</span> flist:</span>
@@ -235,20 +239,20 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <blockquote class="blockquote">
 <p>If you’re running this code on your own laptop, feel free to choose a different font!</p>
 </blockquote>
-<p>Let’s also create some variables to store our title and subtitle text. Although these could be passed straight into title and subtitle arguments in the plotting function, keeping them separated keeps the plotting code looking a little bit cleaner. The subtitle text is also quite long, so we’ll use <code>textwrap.wrap()</code> to wrap the text to 50 characters (without breaking words onto multiple lines):</p>
-<div id="a0e694d7" class="cell" data-execution_count="12">
+<p>Let’s also create some variables to store our title and subtitle text. Although these could be passed straight into title and subtitle arguments in the plotting function, keeping them separated leaves the plotting code looking a little bit cleaner. The subtitle text is also quite long, so we’ll use <code>textwrap.wrap()</code> to wrap the text to 50 characters (without breaking words onto multiple lines):</p>
+<div id="b0b6fcb3" class="cell" data-execution_count="12">
 <div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># title, subtitle</span></span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>title_text <span class="op">=</span> <span class="st">'Coal production since 1900'</span></span>
 <span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>st <span class="op">=</span> <span class="st">'Carbon Majors is a database of historical production data from 122 of the world’s largest oil, gas, coal, and cement producers. This data is used to quantify the direct operational emissions and emissions from the combustion of marketed products that can be attributed to these entities.'</span></span>
 <span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>wrapped_subtitle <span class="op">=</span> <span class="st">'</span><span class="ch">\n</span><span class="st">'</span>.join(textwrap.wrap(st, width<span class="op">=</span><span class="dv">50</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>Instead of a traditional legend, we’re going to use coloured text to show how which categories the different colours map to. We’re going to prepare some text that we’ll use later in functions from the <code>highlight-text</code> library.</p>
+<p>Instead of a traditional legend, we’re going to use coloured text to show which categories the different colours map to. We’re going to prepare some text that we’ll use later in functions from the <code>highlight-text</code> library.</p>
 <p>We create a string as normal with the text we want to display, then format words within the strings in the following way:</p>
-<div id="77142035" class="cell" data-execution_count="13">
+<div id="95d42eb3" class="cell" data-execution_count="13">
 <div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co">'Normal text then &lt;coloured text::{"color": "red"}&gt;'</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>Instead, of <code>"red"</code> we can use our different hex colours. We also add line breaks using <code>\n</code>. We’ll also add some text formatting to the caption in a similar way. Instead of colouring the text, we’ll make some of it bold. Therefore, we use <code>"fontweight": "bold"</code> instead of <code>"color": "red"</code>:</p>
-<div id="46435c73" class="cell" data-execution_count="14">
+<p>Instead, of <code>"red"</code> we can use our different hex colours. We also add line breaks using <code>\n</code>. We can add some text formatting to the caption in a similar way. Instead of colouring the text, we’ll make some of it bold. Therefore, we use <code>"fontweight": "bold"</code> instead of <code>"color": "red"</code>:</p>
+<div id="8bbb6bdf" class="cell" data-execution_count="14">
 <div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># annotation labels</span></span>
 <span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>coal_types_label <span class="op">=</span> <span class="st">'Total coal production includes</span><span class="ch">\n</span><span class="st">production of &lt;Bituminous::{"color": "#E58606"}&gt;,</span><span class="ch">\n</span><span class="st">&lt;Sub-bituminous::{"color": "#5D69B1"}&gt;, &lt;Metallurgical::{"color": "#52BCA3"}&gt;,</span><span class="ch">\n</span><span class="st">&lt;Lignite::{"color": "#99C945"}&gt;, &lt;Anthracite::{"color": "#CC61B0"}&gt;, and &lt;Thermal::{"color": "#24796C"}&gt;</span><span class="ch">\n</span><span class="st">coal. Bituminous accounts</span><span class="ch">\n</span><span class="st">for around half.'</span></span>
 <span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -260,18 +264,16 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="plotting-with-plotnine" class="level1">
 <h1>Plotting with <code>plotnine</code></h1>
-<div id="abf0c2b3" class="cell" data-execution_count="15">
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>p <span class="op">=</span> (gg.ggplot(plot_data, gg.aes(x<span class="op">=</span><span class="st">'year'</span>, y<span class="op">=</span><span class="st">'n'</span>)) <span class="op">+</span></span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>     <span class="co"># Axis lines</span></span>
-<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>     gg.geom_segment(data<span class="op">=</span>segment_data, mapping<span class="op">=</span>gg.aes(x<span class="op">=</span><span class="st">'year'</span>, xend<span class="op">=</span><span class="st">'year'</span>, y<span class="op">=</span><span class="dv">0</span>, yend<span class="op">=-</span><span class="dv">1700</span>),</span>
-<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>                     linetype<span class="op">=</span><span class="st">'dashed'</span>, alpha<span class="op">=</span><span class="fl">0.4</span>, color<span class="op">=</span>text_col) <span class="op">+</span></span>
-<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>     <span class="co"># Axis labels</span></span>
-<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>     gg.geom_text(data<span class="op">=</span>segment_data, mapping<span class="op">=</span>gg.aes(x<span class="op">=</span><span class="st">'year'</span>, y<span class="op">=-</span><span class="dv">1900</span>, label<span class="op">=</span><span class="st">'year'</span>),</span>
-<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>                  color<span class="op">=</span>text_col, size<span class="op">=</span><span class="dv">8</span>, family<span class="op">=</span>body_font, ha<span class="op">=</span><span class="st">'left'</span>) <span class="op">+</span></span>
-<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>     gg.geom_text(data<span class="op">=</span>y_axis_data, mapping<span class="op">=</span>gg.aes(x<span class="op">=</span><span class="dv">2023</span>, y<span class="op">=</span><span class="st">'value'</span>, label<span class="op">=</span><span class="st">'label'</span>),</span>
-<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>                  color<span class="op">=</span>text_col, size<span class="op">=</span><span class="dv">8</span>, family<span class="op">=</span>body_font, ha<span class="op">=</span><span class="st">'left'</span>, va<span class="op">=</span><span class="st">'top'</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p><code>Plotnine</code> creates plots by adding <em>layers</em> e.g.&nbsp;a layer for the background, a layer for points, a layer for text, and so on. For each layer, we need to tell <code>plotnine</code> which data should be used for the layer, and how the variables in the data map to the different <em>aesthetics</em> in the plot using the <code>aes()</code> function.</p>
+<p>We start every <code>plotnine</code> plot using the <code>ggplot()</code> function, and in here we can define the data and the aesthetic mapping <em>globally</em> i.e.&nbsp;for all layers in the plot. Let’s pass in the <code>plot_data</code> and put the <code>year</code> on the x-axis and <code>n</code> on the <code>y-axis</code>.</p>
+<blockquote class="blockquote">
+<p>If you’re a {ggplot2} user, note that the column names needs to passed in quotation marks.</p>
+</blockquote>
+<p>This creates an empty plot, but with the axes limits set according to the <code>year</code> and <code>n</code> columns:</p>
+<div id="26386f7f" class="cell" data-execution_count="15">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>p <span class="op">=</span> (gg.ggplot(plot_data, gg.aes(x<span class="op">=</span><span class="st">'year'</span>, y<span class="op">=</span><span class="st">'n'</span>)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="e8d51185" class="cell" data-execution_count="16">
+<div id="6c7195d6" class="cell" data-execution_count="16">
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
@@ -280,58 +282,23 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </div>
-<div id="9d17517c" class="cell" data-execution_count="17">
+<p>We then start adding on more layers, and we can override the global data and aesthetic mappings that we passed into <code>ggplot()</code> for each individual layer. Let’s start by adding our custom gridlines. We already created the data for this in the <code>segment_data</code> DataFrame earlier so we pass this into the <code>data</code> argument of <code>geom_segment()</code>. The <code>geom_segment()</code> function needs four aesthetics: the x- and y- co-ordinates of the start and end points of the lines. Since the lines are vertical, the <code>year</code> will be both the start and end x-coordinates. We want the lines to start below the area chart we’ll be adding so the y-values go between 0 and -1700 (this took a little bit of trial and error!)</p>
+<p>Again, although the axis labels are added automatically, we’ll add our own custom text instead. We can add text using the <code>geom_text()</code> function, where the required aesthetics are the x- and y- coordinates of where the text should be as well as the <code>label</code> defining what text should appear. We do this for both the x- and y- axis labels. Further arguments are used to define how the text appears: <code>color</code> defines the colour of the text, <code>size</code> defines the size of the text, <code>family</code> defines the font family to be used, <code>ha='left'</code> left aligns the text horizontally, and <code>va='top'</code> aligns the text vertically with the top of the y- coordinate given.</p>
+<blockquote class="blockquote">
+<p>If you’re used to {ggplot2} in R, note that these alignment arguments are different: for example <code>hjust = 0</code> is the R equivalent to <code>ha='left'</code>. Similarly for <code>vjust</code> and <code>va</code>.</p>
+</blockquote>
+<div id="e7fe683f" class="cell" data-execution_count="17">
 <div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>p <span class="op">=</span> (p <span class="op">+</span></span>
-<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>     <span class="co"># Annotation 1</span></span>
-<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>     gg.annotate(</span>
-<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>         <span class="st">'segment'</span>,</span>
-<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>         x<span class="op">=</span>exceeds100, xend<span class="op">=</span>exceeds100,</span>
-<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>         y<span class="op">=</span><span class="dv">0</span>, yend<span class="op">=</span><span class="dv">5000</span>,</span>
-<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>         size<span class="op">=</span><span class="dv">1</span>,</span>
-<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>         color<span class="op">=</span>text_col</span>
-<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>) <span class="op">+</span></span>
-<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>    gg.annotate(</span>
-<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a>         <span class="st">'text'</span>,</span>
-<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a>         x<span class="op">=</span>exceeds100 <span class="op">+</span> <span class="dv">2</span>, y<span class="op">=</span><span class="dv">5000</span>,</span>
-<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a>         label<span class="op">=</span>exceeds100,</span>
-<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a>         color<span class="op">=</span>text_col,</span>
-<span id="cb16-15"><a href="#cb16-15" aria-hidden="true" tabindex="-1"></a>         family<span class="op">=</span>body_font,</span>
-<span id="cb16-16"><a href="#cb16-16" aria-hidden="true" tabindex="-1"></a>         ha<span class="op">=</span><span class="st">'left'</span>,</span>
-<span id="cb16-17"><a href="#cb16-17" aria-hidden="true" tabindex="-1"></a>         va<span class="op">=</span><span class="st">'top'</span>,</span>
-<span id="cb16-18"><a href="#cb16-18" aria-hidden="true" tabindex="-1"></a>         size<span class="op">=</span><span class="dv">10</span>,</span>
-<span id="cb16-19"><a href="#cb16-19" aria-hidden="true" tabindex="-1"></a>         fontweight<span class="op">=</span><span class="st">'bold'</span></span>
-<span id="cb16-20"><a href="#cb16-20" aria-hidden="true" tabindex="-1"></a>) <span class="op">+</span></span>
-<span id="cb16-21"><a href="#cb16-21" aria-hidden="true" tabindex="-1"></a>    gg.annotate(</span>
-<span id="cb16-22"><a href="#cb16-22" aria-hidden="true" tabindex="-1"></a>         <span class="st">'text'</span>,</span>
-<span id="cb16-23"><a href="#cb16-23" aria-hidden="true" tabindex="-1"></a>         x<span class="op">=</span>exceeds100 <span class="op">+</span> <span class="dv">2</span>, y<span class="op">=</span><span class="dv">5000</span> <span class="op">-</span> <span class="dv">600</span>,</span>
-<span id="cb16-24"><a href="#cb16-24" aria-hidden="true" tabindex="-1"></a>         label<span class="op">=</span><span class="st">'Total coal production first</span><span class="ch">\n</span><span class="st">exceeds 100 million tonnes</span><span class="ch">\n</span><span class="st">per year.'</span>,</span>
-<span id="cb16-25"><a href="#cb16-25" aria-hidden="true" tabindex="-1"></a>         color<span class="op">=</span>text_col,</span>
-<span id="cb16-26"><a href="#cb16-26" aria-hidden="true" tabindex="-1"></a>         family<span class="op">=</span>body_font,</span>
-<span id="cb16-27"><a href="#cb16-27" aria-hidden="true" tabindex="-1"></a>         ha<span class="op">=</span><span class="st">'left'</span>,</span>
-<span id="cb16-28"><a href="#cb16-28" aria-hidden="true" tabindex="-1"></a>         size<span class="op">=</span><span class="dv">9</span>,</span>
-<span id="cb16-29"><a href="#cb16-29" aria-hidden="true" tabindex="-1"></a>         va<span class="op">=</span><span class="st">'top'</span></span>
-<span id="cb16-30"><a href="#cb16-30" aria-hidden="true" tabindex="-1"></a>) <span class="op">+</span></span>
-<span id="cb16-31"><a href="#cb16-31" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Annotation 2</span></span>
-<span id="cb16-32"><a href="#cb16-32" aria-hidden="true" tabindex="-1"></a>    gg.annotate(</span>
-<span id="cb16-33"><a href="#cb16-33" aria-hidden="true" tabindex="-1"></a>         <span class="st">'segment'</span>,</span>
-<span id="cb16-34"><a href="#cb16-34" aria-hidden="true" tabindex="-1"></a>         size<span class="op">=</span><span class="dv">1</span>,</span>
-<span id="cb16-35"><a href="#cb16-35" aria-hidden="true" tabindex="-1"></a>         x<span class="op">=</span><span class="dv">1975</span>, xend<span class="op">=</span><span class="dv">1975</span>,</span>
-<span id="cb16-36"><a href="#cb16-36" aria-hidden="true" tabindex="-1"></a>         y<span class="op">=</span><span class="dv">0</span>, yend<span class="op">=</span><span class="dv">10000</span>,</span>
-<span id="cb16-37"><a href="#cb16-37" aria-hidden="true" tabindex="-1"></a>         color<span class="op">=</span>text_col</span>
-<span id="cb16-38"><a href="#cb16-38" aria-hidden="true" tabindex="-1"></a>) <span class="op">+</span></span>
-<span id="cb16-39"><a href="#cb16-39" aria-hidden="true" tabindex="-1"></a>    gg.annotate(</span>
-<span id="cb16-40"><a href="#cb16-40" aria-hidden="true" tabindex="-1"></a>         <span class="st">'text'</span>,</span>
-<span id="cb16-41"><a href="#cb16-41" aria-hidden="true" tabindex="-1"></a>         x<span class="op">=</span><span class="dv">1975</span> <span class="op">+</span> <span class="dv">2</span>, y<span class="op">=</span><span class="dv">10000</span>,</span>
-<span id="cb16-42"><a href="#cb16-42" aria-hidden="true" tabindex="-1"></a>         label<span class="op">=</span><span class="st">'Coal types'</span>,</span>
-<span id="cb16-43"><a href="#cb16-43" aria-hidden="true" tabindex="-1"></a>         color<span class="op">=</span>text_col,</span>
-<span id="cb16-44"><a href="#cb16-44" aria-hidden="true" tabindex="-1"></a>         family<span class="op">=</span>body_font,</span>
-<span id="cb16-45"><a href="#cb16-45" aria-hidden="true" tabindex="-1"></a>         ha<span class="op">=</span><span class="st">'left'</span>,</span>
-<span id="cb16-46"><a href="#cb16-46" aria-hidden="true" tabindex="-1"></a>         va<span class="op">=</span><span class="st">'top'</span>,</span>
-<span id="cb16-47"><a href="#cb16-47" aria-hidden="true" tabindex="-1"></a>         size<span class="op">=</span><span class="dv">10</span>,</span>
-<span id="cb16-48"><a href="#cb16-48" aria-hidden="true" tabindex="-1"></a>         fontweight<span class="op">=</span><span class="st">'bold'</span></span>
-<span id="cb16-49"><a href="#cb16-49" aria-hidden="true" tabindex="-1"></a>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>     <span class="co"># Axis lines</span></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>     gg.geom_segment(data<span class="op">=</span>segment_data, mapping<span class="op">=</span>gg.aes(x<span class="op">=</span><span class="st">'year'</span>, xend<span class="op">=</span><span class="st">'year'</span>, y<span class="op">=</span><span class="dv">0</span>, yend<span class="op">=-</span><span class="dv">1700</span>),</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>                     linetype<span class="op">=</span><span class="st">'dashed'</span>, alpha<span class="op">=</span><span class="fl">0.4</span>, color<span class="op">=</span>text_col) <span class="op">+</span></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>     <span class="co"># Axis labels</span></span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>     gg.geom_text(data<span class="op">=</span>segment_data, mapping<span class="op">=</span>gg.aes(x<span class="op">=</span><span class="st">'year'</span>, y<span class="op">=-</span><span class="dv">1900</span>, label<span class="op">=</span><span class="st">'year'</span>),</span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>                  color<span class="op">=</span>text_col, size<span class="op">=</span><span class="dv">8</span>, family<span class="op">=</span>body_font, ha<span class="op">=</span><span class="st">'left'</span>) <span class="op">+</span></span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>     gg.geom_text(data<span class="op">=</span>y_axis_data, mapping<span class="op">=</span>gg.aes(x<span class="op">=</span><span class="dv">2023</span>, y<span class="op">=</span><span class="st">'value'</span>, label<span class="op">=</span><span class="st">'label'</span>),</span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>                  color<span class="op">=</span>text_col, size<span class="op">=</span><span class="dv">8</span>, family<span class="op">=</span>body_font, ha<span class="op">=</span><span class="st">'left'</span>, va<span class="op">=</span><span class="st">'top'</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="bebf07f7" class="cell" data-execution_count="18">
+<div id="51aaf05a" class="cell" data-execution_count="18">
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
@@ -340,39 +307,64 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </div>
-<p>Let’s finally add the area chart!</p>
-<div id="726ce94d" class="cell" data-execution_count="19">
+<p>We’ll deal with the fact that there are now duplicated grid lines a little bit later. Let’s add some annotations. We’ll add two annotations, with each annotation consisting of three parts: (i) a line indicating a time point, (ii) a title, and (iii) some more information. We can add these using the <code>annotate()</code> function - similar to the <code>geom_()</code> functions we’ve used already but designed to add a small number of plot elements directly instead of from a DataFrame. We need to specify which <em>geometry</em> we want to use, any required aesthetics, and some optional aesthetics.</p>
+<blockquote class="blockquote">
+<p>We <em>could</em> create a DataFrame with this information, and use the <code>geom_()</code> functions instead, but since it’s only two annotations, <code>annotate()</code> will work just fine.</p>
+</blockquote>
+<p>We add the lines using the <code>'segment'</code> geometry where we specify the x- and y-coordinates again, as well as the optional <code>size</code> (width of the line) and <code>color</code> (text colour) arguments. We add the text annotations using the <code>'text'</code> geometry, passing in the x- and y- coordinates and well as the text to appear in the <code>label</code> argument. The <code>fontweight='bold'</code> argument sets the font to bold.</p>
+<p>For the second annotation, the larger text will be the coloured text we defined earlier. Unfortunately, this doesn’t (yet) work directly in <code>plotnine</code> so we’ll leave it out for now and add it a little bit later.</p>
+<div id="de999e56" class="cell" data-execution_count="19">
 <div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>p <span class="op">=</span> (p <span class="op">+</span></span>
-<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Area plot</span></span>
-<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>    gg.geom_area(gg.aes(fill<span class="op">=</span><span class="st">'commodity'</span>)) <span class="op">+</span></span>
-<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Scales</span></span>
-<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>    gg.scale_fill_manual(values<span class="op">=</span>col_palette) <span class="op">+</span></span>
-<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>    gg.scale_x_continuous(limits<span class="op">=</span>(<span class="dv">1896</span>, <span class="dv">2034</span>)) <span class="op">+</span></span>
-<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>    gg.scale_y_continuous(limits<span class="op">=</span>(<span class="op">-</span><span class="dv">3300</span>, <span class="dv">12000</span>)) <span class="op">+</span></span>
-<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Text for title and subtitle</span></span>
-<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>    gg.annotate(</span>
-<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a>         <span class="st">'text'</span>,</span>
-<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a>         x<span class="op">=</span><span class="dv">1900</span>, y<span class="op">=</span><span class="dv">11400</span>,</span>
-<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a>         label<span class="op">=</span>title_text,</span>
-<span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a>         color<span class="op">=</span>text_col,</span>
-<span id="cb17-14"><a href="#cb17-14" aria-hidden="true" tabindex="-1"></a>         family<span class="op">=</span>body_font,</span>
-<span id="cb17-15"><a href="#cb17-15" aria-hidden="true" tabindex="-1"></a>         ha<span class="op">=</span><span class="st">'left'</span>,</span>
-<span id="cb17-16"><a href="#cb17-16" aria-hidden="true" tabindex="-1"></a>         va<span class="op">=</span><span class="st">'top'</span>,</span>
-<span id="cb17-17"><a href="#cb17-17" aria-hidden="true" tabindex="-1"></a>         size<span class="op">=</span><span class="dv">13</span>,</span>
-<span id="cb17-18"><a href="#cb17-18" aria-hidden="true" tabindex="-1"></a>         fontweight<span class="op">=</span><span class="st">'bold'</span></span>
-<span id="cb17-19"><a href="#cb17-19" aria-hidden="true" tabindex="-1"></a>) <span class="op">+</span></span>
-<span id="cb17-20"><a href="#cb17-20" aria-hidden="true" tabindex="-1"></a>    gg.annotate(</span>
-<span id="cb17-21"><a href="#cb17-21" aria-hidden="true" tabindex="-1"></a>         <span class="st">'text'</span>,</span>
-<span id="cb17-22"><a href="#cb17-22" aria-hidden="true" tabindex="-1"></a>         x<span class="op">=</span><span class="dv">1900</span>, y<span class="op">=</span><span class="dv">10500</span>,</span>
-<span id="cb17-23"><a href="#cb17-23" aria-hidden="true" tabindex="-1"></a>         label<span class="op">=</span>wrapped_subtitle,</span>
-<span id="cb17-24"><a href="#cb17-24" aria-hidden="true" tabindex="-1"></a>         color<span class="op">=</span>text_col,</span>
-<span id="cb17-25"><a href="#cb17-25" aria-hidden="true" tabindex="-1"></a>         family<span class="op">=</span>body_font,</span>
-<span id="cb17-26"><a href="#cb17-26" aria-hidden="true" tabindex="-1"></a>         size<span class="op">=</span><span class="fl">9.5</span>,</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>     <span class="co"># Annotation 1</span></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>     gg.annotate(</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>         <span class="st">'segment'</span>,</span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>         x<span class="op">=</span>exceeds100, xend<span class="op">=</span>exceeds100,</span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>         y<span class="op">=</span><span class="dv">0</span>, yend<span class="op">=</span><span class="dv">5000</span>,</span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>         size<span class="op">=</span><span class="dv">1</span>,</span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>         color<span class="op">=</span>text_col</span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>) <span class="op">+</span></span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a>    gg.annotate(</span>
+<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a>         <span class="st">'text'</span>,</span>
+<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a>         x<span class="op">=</span>exceeds100 <span class="op">+</span> <span class="dv">2</span>, y<span class="op">=</span><span class="dv">5000</span>,</span>
+<span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a>         label<span class="op">=</span>exceeds100,</span>
+<span id="cb17-14"><a href="#cb17-14" aria-hidden="true" tabindex="-1"></a>         color<span class="op">=</span>text_col,</span>
+<span id="cb17-15"><a href="#cb17-15" aria-hidden="true" tabindex="-1"></a>         family<span class="op">=</span>body_font,</span>
+<span id="cb17-16"><a href="#cb17-16" aria-hidden="true" tabindex="-1"></a>         ha<span class="op">=</span><span class="st">'left'</span>,</span>
+<span id="cb17-17"><a href="#cb17-17" aria-hidden="true" tabindex="-1"></a>         va<span class="op">=</span><span class="st">'top'</span>,</span>
+<span id="cb17-18"><a href="#cb17-18" aria-hidden="true" tabindex="-1"></a>         size<span class="op">=</span><span class="dv">10</span>,</span>
+<span id="cb17-19"><a href="#cb17-19" aria-hidden="true" tabindex="-1"></a>         fontweight<span class="op">=</span><span class="st">'bold'</span></span>
+<span id="cb17-20"><a href="#cb17-20" aria-hidden="true" tabindex="-1"></a>) <span class="op">+</span></span>
+<span id="cb17-21"><a href="#cb17-21" aria-hidden="true" tabindex="-1"></a>    gg.annotate(</span>
+<span id="cb17-22"><a href="#cb17-22" aria-hidden="true" tabindex="-1"></a>         <span class="st">'text'</span>,</span>
+<span id="cb17-23"><a href="#cb17-23" aria-hidden="true" tabindex="-1"></a>         x<span class="op">=</span>exceeds100 <span class="op">+</span> <span class="dv">2</span>, y<span class="op">=</span><span class="dv">5000</span> <span class="op">-</span> <span class="dv">600</span>,</span>
+<span id="cb17-24"><a href="#cb17-24" aria-hidden="true" tabindex="-1"></a>         label<span class="op">=</span><span class="st">'Total coal production first</span><span class="ch">\n</span><span class="st">exceeds 100 million tonnes</span><span class="ch">\n</span><span class="st">per year.'</span>,</span>
+<span id="cb17-25"><a href="#cb17-25" aria-hidden="true" tabindex="-1"></a>         color<span class="op">=</span>text_col,</span>
+<span id="cb17-26"><a href="#cb17-26" aria-hidden="true" tabindex="-1"></a>         family<span class="op">=</span>body_font,</span>
 <span id="cb17-27"><a href="#cb17-27" aria-hidden="true" tabindex="-1"></a>         ha<span class="op">=</span><span class="st">'left'</span>,</span>
-<span id="cb17-28"><a href="#cb17-28" aria-hidden="true" tabindex="-1"></a>         va<span class="op">=</span><span class="st">'top'</span></span>
-<span id="cb17-29"><a href="#cb17-29" aria-hidden="true" tabindex="-1"></a>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb17-28"><a href="#cb17-28" aria-hidden="true" tabindex="-1"></a>         size<span class="op">=</span><span class="dv">9</span>,</span>
+<span id="cb17-29"><a href="#cb17-29" aria-hidden="true" tabindex="-1"></a>         va<span class="op">=</span><span class="st">'top'</span></span>
+<span id="cb17-30"><a href="#cb17-30" aria-hidden="true" tabindex="-1"></a>) <span class="op">+</span></span>
+<span id="cb17-31"><a href="#cb17-31" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Annotation 2</span></span>
+<span id="cb17-32"><a href="#cb17-32" aria-hidden="true" tabindex="-1"></a>    gg.annotate(</span>
+<span id="cb17-33"><a href="#cb17-33" aria-hidden="true" tabindex="-1"></a>         <span class="st">'segment'</span>,</span>
+<span id="cb17-34"><a href="#cb17-34" aria-hidden="true" tabindex="-1"></a>         size<span class="op">=</span><span class="dv">1</span>,</span>
+<span id="cb17-35"><a href="#cb17-35" aria-hidden="true" tabindex="-1"></a>         x<span class="op">=</span><span class="dv">1975</span>, xend<span class="op">=</span><span class="dv">1975</span>,</span>
+<span id="cb17-36"><a href="#cb17-36" aria-hidden="true" tabindex="-1"></a>         y<span class="op">=</span><span class="dv">0</span>, yend<span class="op">=</span><span class="dv">10000</span>,</span>
+<span id="cb17-37"><a href="#cb17-37" aria-hidden="true" tabindex="-1"></a>         color<span class="op">=</span>text_col</span>
+<span id="cb17-38"><a href="#cb17-38" aria-hidden="true" tabindex="-1"></a>) <span class="op">+</span></span>
+<span id="cb17-39"><a href="#cb17-39" aria-hidden="true" tabindex="-1"></a>    gg.annotate(</span>
+<span id="cb17-40"><a href="#cb17-40" aria-hidden="true" tabindex="-1"></a>         <span class="st">'text'</span>,</span>
+<span id="cb17-41"><a href="#cb17-41" aria-hidden="true" tabindex="-1"></a>         x<span class="op">=</span><span class="dv">1975</span> <span class="op">+</span> <span class="dv">2</span>, y<span class="op">=</span><span class="dv">10000</span>,</span>
+<span id="cb17-42"><a href="#cb17-42" aria-hidden="true" tabindex="-1"></a>         label<span class="op">=</span><span class="st">'Coal types'</span>,</span>
+<span id="cb17-43"><a href="#cb17-43" aria-hidden="true" tabindex="-1"></a>         color<span class="op">=</span>text_col,</span>
+<span id="cb17-44"><a href="#cb17-44" aria-hidden="true" tabindex="-1"></a>         family<span class="op">=</span>body_font,</span>
+<span id="cb17-45"><a href="#cb17-45" aria-hidden="true" tabindex="-1"></a>         ha<span class="op">=</span><span class="st">'left'</span>,</span>
+<span id="cb17-46"><a href="#cb17-46" aria-hidden="true" tabindex="-1"></a>         va<span class="op">=</span><span class="st">'top'</span>,</span>
+<span id="cb17-47"><a href="#cb17-47" aria-hidden="true" tabindex="-1"></a>         size<span class="op">=</span><span class="dv">10</span>,</span>
+<span id="cb17-48"><a href="#cb17-48" aria-hidden="true" tabindex="-1"></a>         fontweight<span class="op">=</span><span class="st">'bold'</span></span>
+<span id="cb17-49"><a href="#cb17-49" aria-hidden="true" tabindex="-1"></a>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="72d7cb56" class="cell" data-execution_count="20">
+<div id="750062a0" class="cell" data-execution_count="20">
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
@@ -381,20 +373,41 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </div>
-<p>Let’s add some final styling with <code>plotnine</code> by trimming the white space between the plot and the axis using <code>coord_cartesian(expand=False)</code>. In <code>plotnine</code> (and {ggplot2} in R) themese are used to control the styling of all non-data related elements e.g.&nbsp;the background colour, the grid lines, and so on. We add <code>theme_void()</code> to remove all axes, gridlines, and unwanted text. Then we add a little bit more styling using different arguments of <code>theme()</code> where we remove the legend, and set the background colour to the variable we defined earlier. Note that the background elements use <code>element_rect</code> since the background is essentially just a big rectangle!</p>
-<div id="144ac520" class="cell" data-execution_count="21">
+<p>Now let’s finally add the area chart! The <code>geom_area()</code> function inherits the <code>data</code> and <code>mapping</code> that we passed into <code>ggplot()</code> earlier, so the only additional mapping we need to specify is the <code>fill</code> option. We want to colour the different areas based on the <code>commodity</code> column. In <code>plotnine</code>, <code>color</code> is typically used for outline colours, and <code>fill</code> is used for inner shape colours. We also pass in the hex colours we defined earlier in <code>col_palette</code> to the <code>scale_fill_manual()</code> function to tell <code>plotnine</code> which colours to use. You’ll notice that a legend is added automatically to the right hand side - we’ll remove this and replace with coloured text a little bit later.</p>
+<p>We also use the <code>scale_x_continuous()</code> and <code>scale_y_continuous()</code> functions to set the range of the x- and y- axes, respectively. We add a little bit of padding to each side to leave room for some extra text.</p>
+<p>Finally, we also add the title and subtitle. Although the <code>labs()</code> function is typically used to add title and subtitle in <code>plotnine</code>, here I wanted a little bit more control over the positioning of the text (within the plot area) so I’ve used the <code>annotate()</code> function again. Again, the choice of y values for the positioning were a little bit of trial and error.</p>
+<div id="0cbfffa7" class="cell" data-execution_count="21">
 <div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>p <span class="op">=</span> (p <span class="op">+</span></span>
-<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Styling</span></span>
-<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>    gg.coord_cartesian(expand<span class="op">=</span><span class="va">False</span>) <span class="op">+</span></span>
-<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>    gg.theme_void(base_size<span class="op">=</span><span class="dv">8</span>) <span class="op">+</span></span>
-<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>    gg.theme(</span>
-<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>         legend_position<span class="op">=</span><span class="st">'none'</span>,</span>
-<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>         plot_background<span class="op">=</span>gg.element_rect(fill<span class="op">=</span>bg_col, color<span class="op">=</span>bg_col),</span>
-<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>         panel_background<span class="op">=</span>gg.element_rect(fill<span class="op">=</span>bg_col, color<span class="op">=</span>bg_col)</span>
-<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Add area plot</span></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>    gg.geom_area(gg.aes(fill<span class="op">=</span><span class="st">'commodity'</span>)) <span class="op">+</span></span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Colour, x-axis, and y-axis scales</span></span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>    gg.scale_fill_manual(values<span class="op">=</span>col_palette) <span class="op">+</span></span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>    gg.scale_x_continuous(limits<span class="op">=</span>(<span class="dv">1896</span>, <span class="dv">2034</span>)) <span class="op">+</span></span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>    gg.scale_y_continuous(limits<span class="op">=</span>(<span class="op">-</span><span class="dv">3300</span>, <span class="dv">12000</span>)) <span class="op">+</span></span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Text for title and subtitle</span></span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>    gg.annotate(</span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>         <span class="st">'text'</span>,</span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a>         x<span class="op">=</span><span class="dv">1900</span>, y<span class="op">=</span><span class="dv">11400</span>,</span>
+<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a>         label<span class="op">=</span>title_text,</span>
+<span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a>         color<span class="op">=</span>text_col,</span>
+<span id="cb18-14"><a href="#cb18-14" aria-hidden="true" tabindex="-1"></a>         family<span class="op">=</span>body_font,</span>
+<span id="cb18-15"><a href="#cb18-15" aria-hidden="true" tabindex="-1"></a>         ha<span class="op">=</span><span class="st">'left'</span>,</span>
+<span id="cb18-16"><a href="#cb18-16" aria-hidden="true" tabindex="-1"></a>         va<span class="op">=</span><span class="st">'top'</span>,</span>
+<span id="cb18-17"><a href="#cb18-17" aria-hidden="true" tabindex="-1"></a>         size<span class="op">=</span><span class="dv">13</span>,</span>
+<span id="cb18-18"><a href="#cb18-18" aria-hidden="true" tabindex="-1"></a>         fontweight<span class="op">=</span><span class="st">'bold'</span></span>
+<span id="cb18-19"><a href="#cb18-19" aria-hidden="true" tabindex="-1"></a>) <span class="op">+</span></span>
+<span id="cb18-20"><a href="#cb18-20" aria-hidden="true" tabindex="-1"></a>    gg.annotate(</span>
+<span id="cb18-21"><a href="#cb18-21" aria-hidden="true" tabindex="-1"></a>         <span class="st">'text'</span>,</span>
+<span id="cb18-22"><a href="#cb18-22" aria-hidden="true" tabindex="-1"></a>         x<span class="op">=</span><span class="dv">1900</span>, y<span class="op">=</span><span class="dv">10500</span>,</span>
+<span id="cb18-23"><a href="#cb18-23" aria-hidden="true" tabindex="-1"></a>         label<span class="op">=</span>wrapped_subtitle,</span>
+<span id="cb18-24"><a href="#cb18-24" aria-hidden="true" tabindex="-1"></a>         color<span class="op">=</span>text_col,</span>
+<span id="cb18-25"><a href="#cb18-25" aria-hidden="true" tabindex="-1"></a>         family<span class="op">=</span>body_font,</span>
+<span id="cb18-26"><a href="#cb18-26" aria-hidden="true" tabindex="-1"></a>         size<span class="op">=</span><span class="fl">9.5</span>,</span>
+<span id="cb18-27"><a href="#cb18-27" aria-hidden="true" tabindex="-1"></a>         ha<span class="op">=</span><span class="st">'left'</span>,</span>
+<span id="cb18-28"><a href="#cb18-28" aria-hidden="true" tabindex="-1"></a>         va<span class="op">=</span><span class="st">'top'</span></span>
+<span id="cb18-29"><a href="#cb18-29" aria-hidden="true" tabindex="-1"></a>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>Here’s what our plot looks like now:</p>
-<div id="61c1d69d" class="cell" data-execution_count="22">
+<div id="30c30959" class="cell" data-execution_count="22">
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
@@ -403,41 +416,71 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </div>
-<p>We still need to add the caption, and the coloured text as an alternative to a traditional legend. Unfortunately, there isn’t currently a native way in <code>plotnine</code> to add coloured text through <code>highlight-text</code>, but we can just add it on top directly.</p>
-<section id="applying-text-styling-with-highlight-text" class="level2">
-<h2 class="anchored" data-anchor-id="applying-text-styling-with-highlight-text">Applying text styling with <code>highlight-text</code></h2>
-<div id="c011ac69" class="cell" data-execution_count="23">
-<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Add coloured text with matplotlib and highlight-text</span></span>
-<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>fig <span class="op">=</span> p.draw()</span>
-<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>fig.set_size_inches(<span class="dv">8</span>, <span class="dv">6</span>, forward<span class="op">=</span><span class="va">True</span>)</span>
-<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>fig.set_dpi(<span class="dv">300</span>)</span>
-<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>ax <span class="op">=</span> plt.gca()</span>
-<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>ht.ax_text(</span>
-<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>    <span class="dv">1977</span>,</span>
-<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>    <span class="dv">9400</span>,</span>
-<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a>    coal_types_label,</span>
-<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a>    vsep<span class="op">=</span><span class="dv">3</span>,</span>
-<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a>    color<span class="op">=</span>text_col,</span>
-<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a>    fontname<span class="op">=</span>body_font,</span>
-<span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a>    fontsize<span class="op">=</span><span class="dv">9</span>,</span>
-<span id="cb19-14"><a href="#cb19-14" aria-hidden="true" tabindex="-1"></a>    va<span class="op">=</span><span class="st">'top'</span>)</span>
-<span id="cb19-15"><a href="#cb19-15" aria-hidden="true" tabindex="-1"></a>ht.ax_text(<span class="dv">1900</span>, <span class="op">-</span><span class="dv">2300</span>, cap, color<span class="op">=</span>text_col,</span>
-<span id="cb19-16"><a href="#cb19-16" aria-hidden="true" tabindex="-1"></a>           fontname<span class="op">=</span>body_font, fontsize<span class="op">=</span><span class="fl">7.5</span>, va<span class="op">=</span><span class="st">'top'</span>)</span>
-<span id="cb19-17"><a href="#cb19-17" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Let’s add some final styling with <code>plotnine</code> by trimming the white space between the plot and the axis using <code>coord_cartesian(expand=False)</code>. In <code>plotnine</code> (and {ggplot2} in R) themes are used to control the styling of all non-data related elements e.g.&nbsp;the background colour, the grid lines, and so on. We add <code>theme_void()</code> to remove all axes, gridlines, and unwanted text. Then we add a little bit more styling using different arguments of <code>theme()</code> to remove the legend and set the background colour to the variable we defined earlier. Note that the background elements use <code>element_rect</code> since the background is essentially just a big rectangle!</p>
+<div id="3354d6b1" class="cell" data-execution_count="23">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>p <span class="op">=</span> (p <span class="op">+</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Styling</span></span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>    gg.coord_cartesian(expand<span class="op">=</span><span class="va">False</span>) <span class="op">+</span></span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>    gg.theme_void(base_size<span class="op">=</span><span class="dv">8</span>) <span class="op">+</span></span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>    gg.theme(</span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>         legend_position<span class="op">=</span><span class="st">'none'</span>,</span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>         plot_background<span class="op">=</span>gg.element_rect(fill<span class="op">=</span>bg_col, color<span class="op">=</span>bg_col),</span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>         panel_background<span class="op">=</span>gg.element_rect(fill<span class="op">=</span>bg_col, color<span class="op">=</span>bg_col)</span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Here’s what our plot looks like now:</p>
+<div id="61f0fcff" class="cell" data-execution_count="24">
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="index_files/figure-html/cell-24-output-1.png" class="img-fluid figure-img"></p>
+<p><img src="index_files/figure-html/cell-25-output-1.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>We still need to add the caption, and the coloured text as an alternative to a traditional legend. Unfortunately, there isn’t currently a native way in <code>plotnine</code> to add coloured text through <code>highlight-text</code>, but we can just add it on top directly.</p>
+<section id="applying-text-styling-with-highlight-text" class="level2">
+<h2 class="anchored" data-anchor-id="applying-text-styling-with-highlight-text">Applying text styling with <code>highlight-text</code></h2>
+<p>We start by converting from a <code>plotnine</code> plot to a <code>matplotlib</code> plot using the <code>draw()</code> function. We also set the size and resolution (<code>dpi</code>) of the plot. The <code>plt.gca()</code> extracts the axes from the existing <code>plotnine</code> plot.</p>
+<p>The <code>ax_text()</code> function from <code>highlight-text</code> adds text at the desired x- and y- coordinates, where the coordinates are based on the data range in the original plot. The <code>vsep</code> argument controls the line spacing, and <code>fontname</code> is used instead of <code>family</code>, but otherwise the arguments work similarly as in <code>plotnine</code>. We use the <code>ax_text()</code> function twice - once to add the coloured annotation, and once to add the caption. Finally, we show the plot.</p>
+<div id="b5e295c1" class="cell" data-execution_count="25">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Add coloured text with matplotlib and highlight-text</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Convert to matplotlib and set plot options</span></span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>fig <span class="op">=</span> p.draw()</span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>fig.set_size_inches(<span class="dv">8</span>, <span class="dv">6</span>, forward<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>fig.set_dpi(<span class="dv">300</span>)</span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>ax <span class="op">=</span> plt.gca()</span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a><span class="co"># add coloured text to annotation</span></span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>ht.ax_text(</span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a>    <span class="dv">1977</span>,</span>
+<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a>    <span class="dv">9400</span>,</span>
+<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a>    coal_types_label,</span>
+<span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a>    vsep<span class="op">=</span><span class="dv">3</span>,</span>
+<span id="cb20-13"><a href="#cb20-13" aria-hidden="true" tabindex="-1"></a>    color<span class="op">=</span>text_col,</span>
+<span id="cb20-14"><a href="#cb20-14" aria-hidden="true" tabindex="-1"></a>    fontname<span class="op">=</span>body_font,</span>
+<span id="cb20-15"><a href="#cb20-15" aria-hidden="true" tabindex="-1"></a>    fontsize<span class="op">=</span><span class="dv">9</span>,</span>
+<span id="cb20-16"><a href="#cb20-16" aria-hidden="true" tabindex="-1"></a>    va<span class="op">=</span><span class="st">'top'</span>)</span>
+<span id="cb20-17"><a href="#cb20-17" aria-hidden="true" tabindex="-1"></a><span class="co"># add caption</span></span>
+<span id="cb20-18"><a href="#cb20-18" aria-hidden="true" tabindex="-1"></a>ht.ax_text(<span class="dv">1900</span>, <span class="op">-</span><span class="dv">2300</span>, cap, color<span class="op">=</span>text_col,</span>
+<span id="cb20-19"><a href="#cb20-19" aria-hidden="true" tabindex="-1"></a>           fontname<span class="op">=</span>body_font, fontsize<span class="op">=</span><span class="fl">7.5</span>, va<span class="op">=</span><span class="st">'top'</span>)</span>
+<span id="cb20-20"><a href="#cb20-20" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/cell-26-output-1.png" class="img-fluid figure-img"></p>
 </figure>
 </div>
 </div>
 </div>
 <p>If you want to save our plot to a file, we can use <code>plt.savefig()</code> and specify the resolution and <code>bbox_inches='tight'</code> to avoid any extra whitespace around the edges of the plot.</p>
-<div id="958bb57d" class="cell" data-execution_count="24">
-<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Save image</span></span>
-<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>plt.savefig(<span class="st">'plot.png'</span>, dpi<span class="op">=</span><span class="dv">300</span>, bbox_inches<span class="op">=</span><span class="st">'tight'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="88aaecbe" class="cell" data-execution_count="26">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Save image</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>plt.savefig(<span class="st">'plot.png'</span>, dpi<span class="op">=</span><span class="dv">300</span>, bbox_inches<span class="op">=</span><span class="st">'tight'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Check out the <a href="https://plotnine.org/gallery/"><code>plotnine</code> Gallery</a> for more examples of plots created using <code>plotnine</code>!</p>
+<blockquote class="blockquote">
+<p>You can also read this tutorial on my <a href="https://nrennie.rbind.io/blog/plotnine-annotated-area-chart/">website</a>!</p>
+</blockquote>
 </section>
 </section>
 
