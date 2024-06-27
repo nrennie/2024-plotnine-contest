@@ -13,7 +13,7 @@ format:
 
 ![](plot.png)
 
-This entry for the `plotnine` contest was inspired by a visualisation I previously created using `{ggplot2}` in R for [#TidyTuesday](https://github.com/rfordatascience/tidytuesday/blob/master/data/2024/2024-05-21/readme.md). You can see the original R version at [github.com/nrennie/tidytuesday/tree/main/2024/2024-05-21](https://github.com/nrennie/tidytuesday/tree/main/2024/2024-05-21).
+This entry for the `plotnine` contest was inspired by a visualisation I previously created using `{ggplot2}` in R for [#TidyTuesday](https://github.com/rfordatascience/tidytuesday/blob/master/data/2024/2024-05-21/readme.md). You can see the original R version on [GitHub](https://github.com/nrennie/tidytuesday/tree/main/2024/2024-05-21).
 
 # Preparing for plotting
 
@@ -47,7 +47,7 @@ Carbon Majors is a database of historical production data from 122 of the worldâ
 
 ## Data wrangling
 
-For this plot, let's focus on emissions relating to coal only, There are six different types of coal in the data set and we'll filter the rows to keep only rows relating to those six types of coal. We'll also remove the word `"Coal"` from each of the category labels since it will be obvious they are types of coal.
+For this plot, let's focus on emissions relating to coal only, There are six different types of coal in the data set and we'll filter the data to keep only rows relating to those six types of coal. We'll also remove the word `"Coal"` from each of the category labels since it will be obvious they are types of coal.
 
 ```{python}
 # Prep data for plotting
@@ -65,13 +65,14 @@ We'll also focus on production levels, so we'll keep only the columns we need to
 We also need to sum up production across the different entities to get a total production value per year. We'll also filter the data to consider only the years since 1900:
 
 ```{python}
+# Total production per year since 1900
 plot_data = plot_data[['year', 'commodity', 'production_value']]
 plot_data = plot_data.groupby(['year', 'commodity'], as_index=False).agg(
     {'production_value': 'sum'}).rename(columns={'production_value': 'n'})
 plot_data = plot_data[plot_data['year'] >= 1900]
 ```
 
-Let's also sort the categories based on their production amount in the last year of the data (2022), to make out plot a little bit clearer:
+Let's also sort the categories based on their production amount in the last year of the data (2022), to make our plot a little bit clearer:
 
 ```{python}
 # Sort values by 2022 levels
@@ -100,7 +101,9 @@ segment_data = pd.DataFrame({
 })
 ```
 
-We'll do something similar with the y-axis, by creating custom labels that encompass both the values and the units - rather than having a separate y-axis title. We'll put these values on the right hand side of the plot (rather than the left as normal) because this is often where people's eyes end up looking when they're reading a chart of data over time.
+We'll do something similar with the y-axis, by creating custom labels that encompass both the values and the units, instead of having a separate y-axis title. We'll put these values on the right hand side of the plot (rather than the left as normal) because this is often where people's eyes end up looking when they're reading a chart of data over time.
+
+> Note the `\n` creates a linebreak in the text.
 
 ```{python}
 # y-axis labels
@@ -112,7 +115,7 @@ y_axis_data = pd.DataFrame({
 
 ## Colour, font, and text variables
 
-To make it easier to change up colour schemes, it's useful to define colours as variables. Here, we define a background colour (`bg_col`), a text colour (`text_col`), and a colour palette that will be used to colour the different areas.
+To make it easier to change up colour schemes, it's useful to define colours as variables. Here, we define a background colour (`bg_col`), a text colour (`text_col`), and a colour palette (`col_palette`) that will be used to colour the different areas.
 
 ```{python}
 # Define background colour, text colour, and colour palette
@@ -147,7 +150,7 @@ else:
 
 > If you're running this code on your own laptop, feel free to choose a different font!
 
-Let's also create some variables to store our title and subtitle text. Although these could be passed straight into title and subtitle arguments in the plotting function, keeping them separated keeps the plotting code looking a little bit cleaner. The subtitle text is also quite long, so we'll use `textwrap.wrap()` to wrap the text to 50 characters (without breaking words onto multiple lines):
+Let's also create some variables to store our title and subtitle text. Although these could be passed straight into title and subtitle arguments in the plotting function, keeping them separated leaves the plotting code looking a little bit cleaner. The subtitle text is also quite long, so we'll use `textwrap.wrap()` to wrap the text to 50 characters (without breaking words onto multiple lines):
 
 ```{python}
 # title, subtitle
@@ -156,7 +159,7 @@ st = 'Carbon Majors is a database of historical production data from 122 of the 
 wrapped_subtitle = '\n'.join(textwrap.wrap(st, width=50))
 ```
 
-Instead of a traditional legend, we're going to use coloured text to show how which categories the different colours map to. We're going to prepare some text that we'll use later in functions from the `highlight-text` library. 
+Instead of a traditional legend, we're going to use coloured text to show which categories the different colours map to. We're going to prepare some text that we'll use later in functions from the `highlight-text` library. 
 
 We create a string as normal with the text we want to display, then format words within the strings in the following way:
 
@@ -165,7 +168,7 @@ We create a string as normal with the text we want to display, then format words
 'Normal text then <coloured text::{"color": "red"}>'
 ```
 
-Instead, of `"red"` we can use our different hex colours. We also add line breaks using `\n`. We'll also add some text formatting to the caption in a similar way. Instead of colouring the text, we'll make some of it bold. Therefore, we use `"fontweight": "bold"` instead of `"color": "red"`:
+Instead, of `"red"` we can use our different hex colours. We also add line breaks using `\n`. We can add some text formatting to the caption in a similar way. Instead of colouring the text, we'll make some of it bold. Therefore, we use `"fontweight": "bold"` instead of `"color": "red"`:
 
 ```{python}
 # annotation labels
@@ -179,8 +182,32 @@ Now we're ready to plot!
 
 # Plotting with `plotnine`
 
+`Plotnine` creates plots by adding *layers* e.g. a layer for the background, a layer for points, a layer for text, and so on. For each layer, we need to tell `plotnine` which data should be used for the layer, and how the variables in the data map to the different *aesthetics* in the plot using the `aes()` function.
+
+We start every `plotnine` plot using the `ggplot()` function, and in here we can define the data and the aesthetic mapping *globally* i.e. for all layers in the plot. Let's pass in the `plot_data` and put the `year` on the x-axis and `n` on the `y-axis`. 
+
+> If you're a {ggplot2} user, note that the column names needs to passed in quotation marks.
+
+This creates an empty plot, but with the axes limits set according to the `year` and `n` columns:
+
 ```{python}
-p = (gg.ggplot(plot_data, gg.aes(x='year', y='n')) +
+p = (gg.ggplot(plot_data, gg.aes(x='year', y='n')))
+```
+
+```{python}
+#| echo: false
+#| eval: true
+p + gg.theme(figure_size = (8, 6))
+```
+
+We then start adding on more layers, and we can override the global data and aesthetic mappings that we passed into `ggplot()` for each individual layer. Let's start by adding our custom gridlines. We already created the data for this in the `segment_data` DataFrame earlier so we pass this into the `data` argument of `geom_segment()`. The `geom_segment()` function needs four aesthetics: the x- and y- co-ordinates of the start and end points of the lines. Since the lines are vertical, the `year` will be both the start and end x-coordinates. We want the lines to start below the area chart we'll be adding so the y-values go between 0 and -1700 (this took a little bit of trial and error!)
+
+Again, although the axis labels are added automatically, we'll add our own custom text instead. We can add text using the `geom_text()` function, where the required aesthetics are the x- and y- coordinates of where the text should be as well as the `label` defining what text should appear. We do this for both the x- and y- axis labels. Further arguments are used to define how the text appears: `color` defines the colour of the text, `size` defines the size of the text, `family` defines the font family to be used, `ha='left'` left aligns the text horizontally, and `va='top'` aligns the text vertically with the top of the y- coordinate given.
+
+> If you're used to {ggplot2} in R, note that these alignment arguments are different: for example `hjust = 0` is the R equivalent to `ha='left'`. Similarly for `vjust` and `va`.
+
+```{python}
+p = (p +
      # Axis lines
      gg.geom_segment(data=segment_data, mapping=gg.aes(x='year', xend='year', y=0, yend=-1700),
                      linetype='dashed', alpha=0.4, color=text_col) +
@@ -196,6 +223,14 @@ p = (gg.ggplot(plot_data, gg.aes(x='year', y='n')) +
 #| eval: true
 p + gg.theme(figure_size = (8, 6))
 ```
+
+We'll deal with the fact that there are now duplicated grid lines a little bit later. Let's add some annotations. We'll add two annotations, with each annotation consisting of three parts: (i) a line indicating a time point, (ii) a title, and (iii) some more information. We can add these using the `annotate()` function - similar to the `geom_()` functions we've used already but designed to add a small number of plot elements directly instead of from a DataFrame. We need to specify which *geometry* we want to use, any required aesthetics, and some optional aesthetics. 
+
+> We *could* create a DataFrame with this information, and use the `geom_()` functions instead, but since it's only two annotations, `annotate()` will work just fine.
+
+We add the lines using the `'segment'` geometry where we specify the x- and y-coordinates again, as well as the optional `size` (width of the line) and `color` (text colour) arguments. We add the text annotations using the `'text'` geometry, passing in the x- and y- coordinates and well as the text to appear in the `label` argument. The `fontweight='bold'` argument sets the font to bold. 
+
+For the second annotation, the larger text will be the coloured text we defined earlier. Unfortunately, this doesn't (yet) work directly in `plotnine` so we'll leave it out for now and add it a little bit later.
 
 ```{python}
 p = (p +
@@ -255,13 +290,17 @@ p = (p +
 p + gg.theme(figure_size = (8, 6))
 ```
 
-Let's finally add the area chart!
+Now let's finally add the area chart! The `geom_area()` function inherits the `data` and `mapping` that we passed into `ggplot()` earlier, so the only additional mapping we need to specify is the `fill` option. We want to colour the different areas based on the `commodity` column. In `plotnine`, `color` is typically used for outline colours, and `fill` is used for inner shape colours. We also pass in the hex colours we defined earlier in `col_palette` to the `scale_fill_manual()` function to tell `plotnine` which colours to use. You'll notice that a legend is added automatically to the right hand side - we'll remove this and replace with coloured text a little bit later.
+
+We also use the `scale_x_continuous()` and `scale_y_continuous()` functions to set the range of the x- and y- axes, respectively. We add a little bit of padding to each side to leave room for some extra text.
+
+Finally, we also add the title and subtitle. Although the `labs()` function is typically used to add title and subtitle in `plotnine`, here I wanted a little bit more control over the positioning of the text (within the plot area) so I've used the `annotate()` function again. Again, the choice of y values for the positioning were a little bit of trial and error.
 
 ```{python}
 p = (p +
-    # Area plot
+    # Add area plot
     gg.geom_area(gg.aes(fill='commodity')) +
-    # Scales
+    # Colour, x-axis, and y-axis scales
     gg.scale_fill_manual(values=col_palette) +
     gg.scale_x_continuous(limits=(1896, 2034)) +
     gg.scale_y_continuous(limits=(-3300, 12000)) +
@@ -295,7 +334,7 @@ p = (p +
 p + gg.theme(figure_size = (8, 6))
 ```
 
-Let's add some final styling with `plotnine` by trimming the white space between the plot and the axis using `coord_cartesian(expand=False)`. In `plotnine` (and {ggplot2} in R) themese are used to control the styling of all non-data related elements e.g. the background colour, the grid lines, and so on. We add `theme_void()` to remove all axes, gridlines, and unwanted text. Then we add a little bit more styling using different arguments of `theme()` where we remove the legend, and set the background colour to the variable we defined earlier. Note that the background elements use `element_rect` since the background is essentially just a big rectangle!
+Let's add some final styling with `plotnine` by trimming the white space between the plot and the axis using `coord_cartesian(expand=False)`. In `plotnine` (and {ggplot2} in R) themes are used to control the styling of all non-data related elements e.g. the background colour, the grid lines, and so on. We add `theme_void()` to remove all axes, gridlines, and unwanted text. Then we add a little bit more styling using different arguments of `theme()` to remove the legend and set the background colour to the variable we defined earlier. Note that the background elements use `element_rect` since the background is essentially just a big rectangle!
 
 ```{python}
 p = (p +
@@ -321,12 +360,18 @@ We still need to add the caption, and the coloured text as an alternative to a t
 
 ## Applying text styling with `highlight-text`
 
+We start by converting from a `plotnine` plot to a `matplotlib` plot using the `draw()` function. We also set the size and resolution (`dpi`) of the plot. The `plt.gca()` extracts the axes from the existing `plotnine` plot.
+
+The `ax_text()` function from `highlight-text` adds text at the desired x- and y- coordinates, where the coordinates are based on the data range in the original plot. The `vsep` argument controls the line spacing, and `fontname` is used instead of `family`, but otherwise the arguments work similarly as in `plotnine`. We use the `ax_text()` function twice - once to add the coloured annotation, and once to add the caption. Finally, we show the plot.
+
 ```{python}
 # Add coloured text with matplotlib and highlight-text
+# Convert to matplotlib and set plot options
 fig = p.draw()
 fig.set_size_inches(8, 6, forward=True)
 fig.set_dpi(300)
 ax = plt.gca()
+# add coloured text to annotation
 ht.ax_text(
     1977,
     9400,
@@ -336,6 +381,7 @@ ht.ax_text(
     fontname=body_font,
     fontsize=9,
     va='top')
+# add caption
 ht.ax_text(1900, -2300, cap, color=text_col,
            fontname=body_font, fontsize=7.5, va='top')
 plt.show()
@@ -350,3 +396,5 @@ plt.savefig('plot.png', dpi=300, bbox_inches='tight')
 ```
 
 Check out the [`plotnine` Gallery](https://plotnine.org/gallery/) for more examples of plots created using `plotnine`!
+
+> You can also read this tutorial on my [website](https://nrennie.rbind.io/blog/plotnine-annotated-area-chart/)!
