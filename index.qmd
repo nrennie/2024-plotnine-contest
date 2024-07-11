@@ -34,20 +34,20 @@ import matplotlib.font_manager
 
 ## Reading in data
 
-The data set we'll be using is the *Carbon Majors* emissions data. As I mentioned earlier, this dataset is used as a [#TidyTuesday dataset](https://github.com/rfordatascience/tidytuesday/blob/master/data/2024/2024-05-21/readme.md). This means we can read the data in directly from the #TidyTuesday GitHub repository:
+The data set we'll be using is the *Carbon Majors* emissions data. As I mentioned earlier, this dataset was used as a [#TidyTuesday dataset](https://github.com/rfordatascience/tidytuesday/blob/master/data/2024/2024-05-21/readme.md). This means we can read the data in directly from the #TidyTuesday GitHub repository:
 
 ```{python}
 emissions = pd.read_csv(
     'https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2024/2024-05-21/emissions.csv')
 ```
 
-You can download the `emissions.csv` file from GitHub if you prefer to load the data from a local file. There's also a copy of the `emissions.csv` file in the `data` folder of the [GitHub repository](https://github.com/nrennie/2024-plotnine-contest) for this tutorial - just in case!
+You can download the `emissions.csv` file from [GitHub](https://github.com/rfordatascience/tidytuesday/blob/master/data/2024/2024-05-21/emissions.csv) if you prefer to load the data from a local file. There's also a copy of the `emissions.csv` file in the `data` folder of the [GitHub repository](https://github.com/nrennie/2024-plotnine-contest) for this tutorial - just in case!
 
 Carbon Majors is a database of historical production data from 122 of the world’s largest oil, gas, coal, and cement producers. The dataset has 12,551 rows and 7 columns with the following variables: `year`, `parent_entity`, `parent_type`, `commodity`, `production_value`, `production_unit`, and `total_emissions_MtCO2e`. The #TidyTuesday [README](https://github.com/rfordatascience/tidytuesday/blob/master/data/2024/2024-05-21/readme.md#emissionscsv) file has more information on what the variables are.
 
 ## Data wrangling
 
-For this plot, let's focus on emissions relating to coal only, There are six different types of coal in the data set and we'll filter the data to keep only rows relating to those six types of coal. We'll also remove the word `"Coal"` from each of the category labels since it will be obvious they are types of coal.
+For this plot, let's focus on emissions relating to coal only. There are six different types of coal in the data set and we'll filter the data to keep only rows relating to those six types of coal. We'll also remove the word `"Coal"` from each of the category labels since it will be obvious they are types of coal.
 
 ```{python}
 # Prep data for plotting
@@ -60,9 +60,9 @@ plot_data = emissions[
 plot_data['commodity'] = plot_data['commodity'].str.replace(' Coal', '')
 ```
 
-We'll also focus on production levels, so we'll keep only the columns we need to plot: year, type of coal (`commodity`), and amount produced (`production_value`). The data README tells us that the `production_value` column is given in million tonnes for coal production.
+We'll also focus on production levels, so we'll keep only the columns we need to plot: `year`, type of coal (`commodity`), and amount produced (`production_value`). The data README tells us that the `production_value` column is given in million tonnes for coal production.
 
-We also need to sum up production across the different entities to get a total production value per year. We'll also filter the data to consider only the years since 1900:
+We need to sum up production across the different entities to get a total production value per year. We'll also filter the data to consider only the years since 1900:
 
 ```{python}
 # Total production per year since 1900
@@ -150,7 +150,7 @@ else:
 
 > If you're running this code on your own laptop, feel free to choose a different font!
 
-Let's also create some variables to store our title and subtitle text. Although these could be passed straight into title and subtitle arguments in the plotting function, keeping them separated leaves the plotting code looking a little bit cleaner. The subtitle text is also quite long, so we'll use `textwrap.wrap()` to wrap the text to 50 characters (without breaking words onto multiple lines):
+Let's also create some variables to store our title and subtitle text. Although these could be passed straight into title and subtitle arguments in the plotting function, keeping them separate leaves the plotting code looking a little bit cleaner. The subtitle text is also quite long, so we'll use `textwrap.wrap()` to wrap the text to 50 characters (without breaking words onto multiple lines):
 
 ```{python}
 # title, subtitle
@@ -159,7 +159,7 @@ st = 'Carbon Majors is a database of historical production data from 122 of the 
 wrapped_subtitle = '\n'.join(textwrap.wrap(st, width=50))
 ```
 
-Instead of a traditional legend, we're going to use coloured text to show which categories the different colours map to. We're going to prepare some text that we'll use later in functions from the `highlight-text` library. 
+Instead of a traditional legend, we're going to use coloured text to show which categories the different colours map to. So let's prepare some text that we'll use later in functions from the [`highlight-text` library](https://pypi.org/project/highlight-text/). 
 
 We create a string as normal with the text we want to display, then format words within the strings in the following way:
 
@@ -200,7 +200,7 @@ p = (gg.ggplot(plot_data, gg.aes(x='year', y='n')))
 p + gg.theme(figure_size = (8, 6))
 ```
 
-We then start adding on more layers, and we can override the global data and aesthetic mappings that we passed into `ggplot()` for each individual layer. Let's start by adding our custom gridlines. We already created the data for this in the `segment_data` DataFrame earlier so we pass this into the `data` argument of `geom_segment()`. The `geom_segment()` function needs four aesthetics: the x- and y- co-ordinates of the start and end points of the lines. Since the lines are vertical, the `year` will be both the start and end x-coordinates. We want the lines to start below the area chart we'll be adding so the y-values go between 0 and -1700 (this took a little bit of trial and error!)
+We then start adding on more layers, and we can override the global data and aesthetic mappings that we passed into `ggplot()` for each individual layer. Let's start by adding our custom gridlines. We already created the data for this in the `segment_data` DataFrame earlier so we pass this into the `data` argument of `geom_segment()`. The `geom_segment()` function needs four aesthetics: the x- and y- co-ordinates of the start and end points of the lines. Since the lines are vertical, the `year` will be both the start and end x-coordinates. We want the lines to start below the area chart we'll be adding so the y-values go between `0` and `-1700` (this took a little bit of trial and error!)
 
 Again, although the axis labels are added automatically, we'll add our own custom text instead. We can add text using the `geom_text()` function, where the required aesthetics are the x- and y- coordinates of where the text should be as well as the `label` defining what text should appear. We do this for both the x- and y- axis labels. Further arguments are used to define how the text appears: `color` defines the colour of the text, `size` defines the size of the text, `family` defines the font family to be used, `ha='left'` left aligns the text horizontally, and `va='top'` aligns the text vertically with the top of the y- coordinate given.
 
@@ -356,7 +356,7 @@ Here's what our plot looks like now:
 p + gg.theme(figure_size = (8, 6))
 ```
 
-We still need to add the caption, and the coloured text as an alternative to a traditional legend. Unfortunately, there isn't currently a native way in `plotnine` to add coloured text through `highlight-text`, but we can just add it on top directly. 
+We still need to add the caption, and the coloured text as an alternative to a traditional legend. Unfortunately, there isn't currently a native way in `plotnine` to add coloured text through `highlight-text`. Luckily, `plotnine` is built on top of `matplotlib` - and we can exploit that to add the text directly using `matplotlib`.
 
 ## Applying text styling with `highlight-text`
 
@@ -387,7 +387,7 @@ ht.ax_text(1900, -2300, cap, color=text_col,
 plt.show()
 ```
 
-If you want to save our plot to a file, we can use `plt.savefig()` and specify the resolution and `bbox_inches='tight'` to avoid any extra whitespace around the edges of the plot.
+If we want to save our plot to a file, we can use `plt.savefig()` and specify the resolution and `bbox_inches='tight'` to avoid any extra whitespace around the edges of the plot.
 
 ```{python}
 #| eval: false
