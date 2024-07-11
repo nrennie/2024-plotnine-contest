@@ -41,7 +41,7 @@ emissions = pd.read_csv(
     'https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2024/2024-05-21/emissions.csv')
 ```
 
-You can download the `emissions.csv` file from [GitHub](https://github.com/rfordatascience/tidytuesday/blob/master/data/2024/2024-05-21/emissions.csv) if you prefer to load the data from a local file. There's also a copy of the `emissions.csv` file in the `data` folder of the [GitHub repository](https://github.com/nrennie/2024-plotnine-contest) for this tutorial - just in case!
+You can download the `emissions.csv` file from [GitHub](https://github.com/rfordatascience/tidytuesday/blob/master/data/2024/2024-05-21/emissions.csv) if you prefer to load the data from a local file. 
 
 Carbon Majors is a database of historical production data from 122 of the world’s largest oil, gas, coal, and cement producers. The dataset has 12,551 rows and 7 columns with the following variables: `year`, `parent_entity`, `parent_type`, `commodity`, `production_value`, `production_unit`, and `total_emissions_MtCO2e`. The #TidyTuesday [README](https://github.com/rfordatascience/tidytuesday/blob/master/data/2024/2024-05-21/readme.md#emissionscsv) file has more information on what the variables are.
 
