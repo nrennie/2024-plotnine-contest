@@ -45,6 +45,14 @@ You can download the `emissions.csv` file from [GitHub](https://github.com/rford
 
 Carbon Majors is a database of historical production data from 122 of the world’s largest oil, gas, coal, and cement producers. The dataset has 12,551 rows and 7 columns with the following variables: `year`, `parent_entity`, `parent_type`, `commodity`, `production_value`, `production_unit`, and `total_emissions_MtCO2e`. The #TidyTuesday [README](https://github.com/rfordatascience/tidytuesday/blob/master/data/2024/2024-05-21/readme.md#emissionscsv) file has more information on what the variables are.
 
+::: {.callout-note}
+
+## Carbon Majors Data
+
+The original data can be downloaded from [carbonmajors.org/Downloads](https://carbonmajors.org/Downloads). The Carbon Majors dataset is available for download and for non-commercial use, subject to InfluenceMap's [Terms and Conditions](https://influencemap.org/terms). The version used in this plot was downloaded in May 2024.
+
+:::
+
 ## Data wrangling
 
 For this plot, let's focus on emissions relating to coal only. There are six different types of coal in the data set and we'll filter the data to keep only rows relating to those six types of coal. We'll also remove the word `"Coal"` from each of the category labels since it will be obvious they are types of coal.
