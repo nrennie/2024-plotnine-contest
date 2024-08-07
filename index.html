@@ -131,7 +131,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="python-libraries" class="level2">
 <h2 class="anchored" data-anchor-id="python-libraries">Python libraries</h2>
 <p>Let’s start by loading the Python libraries that we’ll need to create the plot. Beyond <code>plotnine</code> for actually plotting, we also need <code>pandas</code> for data wrangling, <code>textwrap</code> for wrapping long strings of text, <code>matplotlib.pyplot</code> for some additional plot tinkering, <code>highlight_text</code> for adding coloured and bold text to annotations, and <code>matplotlib.font_manager</code> for dealing with fonts.</p>
-<div id="493b66d2" class="cell" data-execution_count="1">
+<div id="9c97764f" class="cell" data-execution_count="1">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> plotnine <span class="im">as</span> gg</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> textwrap</span>
@@ -143,17 +143,30 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="reading-in-data" class="level2">
 <h2 class="anchored" data-anchor-id="reading-in-data">Reading in data</h2>
 <p>The data set we’ll be using is the <em>Carbon Majors</em> emissions data. As I mentioned earlier, this dataset was used as a <a href="https://github.com/rfordatascience/tidytuesday/blob/master/data/2024/2024-05-21/readme.md">#TidyTuesday dataset</a>. This means we can read the data in directly from the #TidyTuesday GitHub repository:</p>
-<div id="55854010" class="cell" data-execution_count="2">
+<div id="f76f0808" class="cell" data-execution_count="2">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>emissions <span class="op">=</span> pd.read_csv(</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">'https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2024/2024-05-21/emissions.csv'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>You can download the <code>emissions.csv</code> file from <a href="https://github.com/rfordatascience/tidytuesday/blob/master/data/2024/2024-05-21/emissions.csv">GitHub</a> if you prefer to load the data from a local file.</p>
 <p>Carbon Majors is a database of historical production data from 122 of the world’s largest oil, gas, coal, and cement producers. The dataset has 12,551 rows and 7 columns with the following variables: <code>year</code>, <code>parent_entity</code>, <code>parent_type</code>, <code>commodity</code>, <code>production_value</code>, <code>production_unit</code>, and <code>total_emissions_MtCO2e</code>. The #TidyTuesday <a href="https://github.com/rfordatascience/tidytuesday/blob/master/data/2024/2024-05-21/readme.md#emissionscsv">README</a> file has more information on what the variables are.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Carbon Majors Data
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The original data can be downloaded from <a href="https://carbonmajors.org/Downloads">carbonmajors.org/Downloads</a>. The Carbon Majors dataset is available for download and for non-commercial use, subject to InfluenceMap’s <a href="https://influencemap.org/terms">Terms and Conditions</a>. The version used in this plot was downloaded in May 2024.</p>
+</div>
+</div>
 </section>
 <section id="data-wrangling" class="level2">
 <h2 class="anchored" data-anchor-id="data-wrangling">Data wrangling</h2>
 <p>For this plot, let’s focus on emissions relating to coal only. There are six different types of coal in the data set and we’ll filter the data to keep only rows relating to those six types of coal. We’ll also remove the word <code>"Coal"</code> from each of the category labels since it will be obvious they are types of coal.</p>
-<div id="94df7c38" class="cell" data-execution_count="3">
+<div id="a9ef4a9e" class="cell" data-execution_count="3">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Prep data for plotting</span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>plot_data <span class="op">=</span> emissions[</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    emissions[<span class="st">'commodity'</span>].isin([</span>
@@ -165,7 +178,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 <p>We’ll also focus on production levels, so we’ll keep only the columns we need to plot: <code>year</code>, type of coal (<code>commodity</code>), and amount produced (<code>production_value</code>). The data README tells us that the <code>production_value</code> column is given in million tonnes for coal production.</p>
 <p>We need to sum up production across the different entities to get a total production value per year. We’ll also filter the data to consider only the years since 1900:</p>
-<div id="fc68a09b" class="cell" data-execution_count="4">
+<div id="f17d74df" class="cell" data-execution_count="4">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Total production per year since 1900</span></span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>plot_data <span class="op">=</span> plot_data[[<span class="st">'year'</span>, <span class="st">'commodity'</span>, <span class="st">'production_value'</span>]]</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>plot_data <span class="op">=</span> plot_data.groupby([<span class="st">'year'</span>, <span class="st">'commodity'</span>], as_index<span class="op">=</span><span class="va">False</span>).agg(</span>
@@ -173,7 +186,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>plot_data <span class="op">=</span> plot_data[plot_data[<span class="st">'year'</span>] <span class="op">&gt;=</span> <span class="dv">1900</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Let’s also sort the categories based on their production amount in the last year of the data (2022), to make our plot a little bit clearer:</p>
-<div id="de7b2842" class="cell" data-execution_count="5">
+<div id="dea9b830" class="cell" data-execution_count="5">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Sort values by 2022 levels</span></span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>orders <span class="op">=</span> plot_data[plot_data[<span class="st">'year'</span>] <span class="op">==</span> <span class="dv">2022</span>].sort_values(</span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    by<span class="op">=</span><span class="st">'n'</span>, ascending<span class="op">=</span><span class="va">False</span>)[<span class="st">'commodity'</span>]</span>
@@ -183,13 +196,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>    ordered<span class="op">=</span><span class="va">True</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>We’re going to be adding some annotations to the plot, and one of the annotations will show the first year that production exceeded 100 million tonnes per year. Let’s calculate that year (and therefore the position of the annotation) in a data-driven way:</p>
-<div id="57887697" class="cell" data-execution_count="6">
+<div id="30ed868a" class="cell" data-execution_count="6">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Values for annotations</span></span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>exceeds100 <span class="op">=</span> plot_data.groupby(<span class="st">'year'</span>)[<span class="st">'n'</span>].<span class="bu">sum</span>()</span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>exceeds100 <span class="op">=</span> exceeds100[exceeds100 <span class="op">&gt;</span> <span class="dv">100</span>].index.<span class="bu">min</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>I often find that traditional grid lines make a plot look a little bit too <em>busy</em>. Instead, we’re going to create our own <em>grid lines</em> by drawing some vertical lines. To do this, let’s create some data with the desired positions of where the vertical lines hit the x-axis:</p>
-<div id="490a6910" class="cell" data-execution_count="7">
+<div id="3de19e9b" class="cell" data-execution_count="7">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create data for x-axis labels</span></span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>segment_data <span class="op">=</span> pd.DataFrame({</span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">'year'</span>: <span class="bu">list</span>(<span class="bu">range</span>(<span class="dv">1900</span>, <span class="dv">2021</span>, <span class="dv">20</span>))</span>
@@ -199,7 +212,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <blockquote class="blockquote">
 <p>Note the <code>\n</code> creates a linebreak in the text.</p>
 </blockquote>
-<div id="22381670" class="cell" data-execution_count="8">
+<div id="16bbd0ef" class="cell" data-execution_count="8">
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># y-axis labels</span></span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>y_axis_data <span class="op">=</span> pd.DataFrame({</span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">'value'</span>: [<span class="dv">0</span>, <span class="dv">2000</span>, <span class="dv">4000</span>, <span class="dv">6000</span>, <span class="dv">8000</span>],</span>
@@ -210,7 +223,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="colour-font-and-text-variables" class="level2">
 <h2 class="anchored" data-anchor-id="colour-font-and-text-variables">Colour, font, and text variables</h2>
 <p>To make it easier to change up colour schemes, it’s useful to define colours as variables. Here, we define a background colour (<code>bg_col</code>), a text colour (<code>text_col</code>), and a colour palette (<code>col_palette</code>) that will be used to colour the different areas.</p>
-<div id="21b75e03" class="cell" data-execution_count="9">
+<div id="afa36446" class="cell" data-execution_count="9">
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Define background colour, text colour, and colour palette</span></span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>bg_col <span class="op">=</span> <span class="st">'#FFFFFA'</span></span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>text_col <span class="op">=</span> <span class="st">'#0D5C63'</span></span>
@@ -223,12 +236,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>    <span class="st">'#24796C'</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Similarly, we can define variable(s) for which font we want to use. But we also need to make sure that the font we want is actually available. We can get a list of available fonts using <code>matplotlib.font_manager.findSystemFonts()</code>.</p>
-<div id="0c5e5c5b" class="cell" data-execution_count="10">
+<div id="d665ea1e" class="cell" data-execution_count="10">
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Available fonts</span></span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>flist <span class="op">=</span> matplotlib.font_manager.findSystemFonts()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>If <code>'Arial'</code> is installed, we’ll use that as the main font (<code>body_font</code>) and if not, we’ll use the default sans serif font.</p>
-<div id="85b00071" class="cell" data-execution_count="11">
+<div id="f5900830" class="cell" data-execution_count="11">
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Check if 'Arial' in list of installed fonts</span></span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>flist <span class="op">=</span> <span class="st">''</span>.join(flist).lower()</span>
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="st">'arial'</span> <span class="kw">in</span> flist:</span>
@@ -240,7 +253,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>If you’re running this code on your own laptop, feel free to choose a different font!</p>
 </blockquote>
 <p>Let’s also create some variables to store our title and subtitle text. Although these could be passed straight into title and subtitle arguments in the plotting function, keeping them separate leaves the plotting code looking a little bit cleaner. The subtitle text is also quite long, so we’ll use <code>textwrap.wrap()</code> to wrap the text to 50 characters (without breaking words onto multiple lines):</p>
-<div id="2865f69a" class="cell" data-execution_count="12">
+<div id="29324ba9" class="cell" data-execution_count="12">
 <div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># title, subtitle</span></span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>title_text <span class="op">=</span> <span class="st">'Coal production since 1900'</span></span>
 <span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>st <span class="op">=</span> <span class="st">'Carbon Majors is a database of historical production data from 122 of the world’s largest oil, gas, coal, and cement producers. This data is used to quantify the direct operational emissions and emissions from the combustion of marketed products that can be attributed to these entities.'</span></span>
@@ -248,11 +261,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 <p>Instead of a traditional legend, we’re going to use coloured text to show which categories the different colours map to. So let’s prepare some text that we’ll use later in functions from the <a href="https://pypi.org/project/highlight-text/"><code>highlight-text</code> library</a>.</p>
 <p>We create a string as normal with the text we want to display, then format words within the strings in the following way:</p>
-<div id="afa8f40b" class="cell" data-execution_count="13">
+<div id="12f4df9f" class="cell" data-execution_count="13">
 <div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co">'Normal text then &lt;coloured text::{"color": "red"}&gt;'</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Instead, of <code>"red"</code> we can use our different hex colours. We also add line breaks using <code>\n</code>. We can add some text formatting to the caption in a similar way. Instead of colouring the text, we’ll make some of it bold. Therefore, we use <code>"fontweight": "bold"</code> instead of <code>"color": "red"</code>:</p>
-<div id="7eeb5443" class="cell" data-execution_count="14">
+<div id="a4309de5" class="cell" data-execution_count="14">
 <div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># annotation labels</span></span>
 <span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>coal_types_label <span class="op">=</span> <span class="st">'Total coal production includes</span><span class="ch">\n</span><span class="st">production of &lt;Bituminous::{"color": "#E58606"}&gt;,</span><span class="ch">\n</span><span class="st">&lt;Sub-bituminous::{"color": "#5D69B1"}&gt;, &lt;Metallurgical::{"color": "#52BCA3"}&gt;,</span><span class="ch">\n</span><span class="st">&lt;Lignite::{"color": "#99C945"}&gt;, &lt;Anthracite::{"color": "#CC61B0"}&gt;, and &lt;Thermal::{"color": "#24796C"}&gt;</span><span class="ch">\n</span><span class="st">coal. Bituminous accounts</span><span class="ch">\n</span><span class="st">for around half.'</span></span>
 <span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -270,10 +283,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>If you’re a {ggplot2} user, note that the column names needs to passed in quotation marks.</p>
 </blockquote>
 <p>This creates an empty plot, but with the axes limits set according to the <code>year</code> and <code>n</code> columns:</p>
-<div id="96e84985" class="cell" data-execution_count="15">
+<div id="31271945" class="cell" data-execution_count="15">
 <div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>p <span class="op">=</span> (gg.ggplot(plot_data, gg.aes(x<span class="op">=</span><span class="st">'year'</span>, y<span class="op">=</span><span class="st">'n'</span>)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="60ae32fa" class="cell" data-execution_count="16">
+<div id="fd3d3654" class="cell" data-execution_count="16">
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
@@ -287,7 +300,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <blockquote class="blockquote">
 <p>If you’re used to {ggplot2} in R, note that these alignment arguments are different: for example <code>hjust = 0</code> is the R equivalent to <code>ha='left'</code>. Similarly for <code>vjust</code> and <code>va</code>.</p>
 </blockquote>
-<div id="5a9e194f" class="cell" data-execution_count="17">
+<div id="063f6d52" class="cell" data-execution_count="17">
 <div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>p <span class="op">=</span> (p <span class="op">+</span></span>
 <span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>     <span class="co"># Axis lines</span></span>
 <span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>     gg.geom_segment(data<span class="op">=</span>segment_data, mapping<span class="op">=</span>gg.aes(x<span class="op">=</span><span class="st">'year'</span>, xend<span class="op">=</span><span class="st">'year'</span>, y<span class="op">=</span><span class="dv">0</span>, yend<span class="op">=-</span><span class="dv">1700</span>),</span>
@@ -298,7 +311,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>     gg.geom_text(data<span class="op">=</span>y_axis_data, mapping<span class="op">=</span>gg.aes(x<span class="op">=</span><span class="dv">2023</span>, y<span class="op">=</span><span class="st">'value'</span>, label<span class="op">=</span><span class="st">'label'</span>),</span>
 <span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>                  color<span class="op">=</span>text_col, size<span class="op">=</span><span class="dv">8</span>, family<span class="op">=</span>body_font, ha<span class="op">=</span><span class="st">'left'</span>, va<span class="op">=</span><span class="st">'top'</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="a83499c5" class="cell" data-execution_count="18">
+<div id="ad34da5f" class="cell" data-execution_count="18">
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
@@ -313,7 +326,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </blockquote>
 <p>We add the lines using the <code>'segment'</code> geometry where we specify the x- and y-coordinates again, as well as the optional <code>size</code> (width of the line) and <code>color</code> (text colour) arguments. We add the text annotations using the <code>'text'</code> geometry, passing in the x- and y- coordinates and well as the text to appear in the <code>label</code> argument. The <code>fontweight='bold'</code> argument sets the font to bold.</p>
 <p>For the second annotation, the larger text will be the coloured text we defined earlier. Unfortunately, this doesn’t (yet) work directly in <code>plotnine</code> so we’ll leave it out for now and add it a little bit later.</p>
-<div id="fde10220" class="cell" data-execution_count="19">
+<div id="e2cc6171" class="cell" data-execution_count="19">
 <div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>p <span class="op">=</span> (p <span class="op">+</span></span>
 <span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>     <span class="co"># Annotation 1</span></span>
 <span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>     gg.annotate(</span>
@@ -364,7 +377,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb17-48"><a href="#cb17-48" aria-hidden="true" tabindex="-1"></a>         fontweight<span class="op">=</span><span class="st">'bold'</span></span>
 <span id="cb17-49"><a href="#cb17-49" aria-hidden="true" tabindex="-1"></a>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="892ed61a" class="cell" data-execution_count="20">
+<div id="3a84cb80" class="cell" data-execution_count="20">
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
@@ -376,7 +389,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>Now let’s finally add the area chart! The <code>geom_area()</code> function inherits the <code>data</code> and <code>mapping</code> that we passed into <code>ggplot()</code> earlier, so the only additional mapping we need to specify is the <code>fill</code> option. We want to colour the different areas based on the <code>commodity</code> column. In <code>plotnine</code>, <code>color</code> is typically used for outline colours, and <code>fill</code> is used for inner shape colours. We also pass in the hex colours we defined earlier in <code>col_palette</code> to the <code>scale_fill_manual()</code> function to tell <code>plotnine</code> which colours to use. You’ll notice that a legend is added automatically to the right hand side - we’ll remove this and replace with coloured text a little bit later.</p>
 <p>We also use the <code>scale_x_continuous()</code> and <code>scale_y_continuous()</code> functions to set the range of the x- and y- axes, respectively. We add a little bit of padding to each side to leave room for some extra text.</p>
 <p>Finally, we also add the title and subtitle. Although the <code>labs()</code> function is typically used to add title and subtitle in <code>plotnine</code>, here I wanted a little bit more control over the positioning of the text (within the plot area) so I’ve used the <code>annotate()</code> function again. Again, the choice of y values for the positioning were a little bit of trial and error.</p>
-<div id="081520c8" class="cell" data-execution_count="21">
+<div id="3334dbd6" class="cell" data-execution_count="21">
 <div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>p <span class="op">=</span> (p <span class="op">+</span></span>
 <span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Add area plot</span></span>
 <span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>    gg.geom_area(gg.aes(fill<span class="op">=</span><span class="st">'commodity'</span>)) <span class="op">+</span></span>
@@ -407,7 +420,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb18-28"><a href="#cb18-28" aria-hidden="true" tabindex="-1"></a>         va<span class="op">=</span><span class="st">'top'</span></span>
 <span id="cb18-29"><a href="#cb18-29" aria-hidden="true" tabindex="-1"></a>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="85bf0b80" class="cell" data-execution_count="22">
+<div id="03a2129d" class="cell" data-execution_count="22">
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
@@ -417,7 +430,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 <p>Let’s add some final styling with <code>plotnine</code> by trimming the white space between the plot and the axis using <code>coord_cartesian(expand=False)</code>. In <code>plotnine</code> (and {ggplot2} in R) themes are used to control the styling of all non-data related elements e.g.&nbsp;the background colour, the grid lines, and so on. We add <code>theme_void()</code> to remove all axes, gridlines, and unwanted text. Then we add a little bit more styling using different arguments of <code>theme()</code> to remove the legend and set the background colour to the variable we defined earlier. Note that the background elements use <code>element_rect</code> since the background is essentially just a big rectangle!</p>
-<div id="469ca63b" class="cell" data-execution_count="23">
+<div id="1369d612" class="cell" data-execution_count="23">
 <div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>p <span class="op">=</span> (p <span class="op">+</span></span>
 <span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Styling</span></span>
 <span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>    gg.coord_cartesian(expand<span class="op">=</span><span class="va">False</span>) <span class="op">+</span></span>
@@ -429,7 +442,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Here’s what our plot looks like now:</p>
-<div id="554a187f" class="cell" data-execution_count="24">
+<div id="c0bf53e1" class="cell" data-execution_count="24">
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
@@ -443,7 +456,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 class="anchored" data-anchor-id="applying-text-styling-with-highlight-text">Applying text styling with <code>highlight-text</code></h2>
 <p>We start by converting from a <code>plotnine</code> plot to a <code>matplotlib</code> plot using the <code>draw()</code> function. We also set the size and resolution (<code>dpi</code>) of the plot. The <code>plt.gca()</code> extracts the axes from the existing <code>plotnine</code> plot.</p>
 <p>The <code>ax_text()</code> function from <code>highlight-text</code> adds text at the desired x- and y- coordinates, where the coordinates are based on the data range in the original plot. The <code>vsep</code> argument controls the line spacing, and <code>fontname</code> is used instead of <code>family</code>, but otherwise the arguments work similarly as in <code>plotnine</code>. We use the <code>ax_text()</code> function twice - once to add the coloured annotation, and once to add the caption. Finally, we show the plot.</p>
-<div id="ced93723" class="cell" data-execution_count="25">
+<div id="2b36600a" class="cell" data-execution_count="25">
 <div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Add coloured text with matplotlib and highlight-text</span></span>
 <span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Convert to matplotlib and set plot options</span></span>
 <span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>fig <span class="op">=</span> p.draw()</span>
@@ -473,7 +486,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 <p>If we want to save our plot to a file, we can use <code>plt.savefig()</code> and specify the resolution and <code>bbox_inches='tight'</code> to avoid any extra whitespace around the edges of the plot.</p>
-<div id="119a92e1" class="cell" data-execution_count="26">
+<div id="46d6dfb4" class="cell" data-execution_count="26">
 <div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Save image</span></span>
 <span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>plt.savefig(<span class="st">'plot.png'</span>, dpi<span class="op">=</span><span class="dv">300</span>, bbox_inches<span class="op">=</span><span class="st">'tight'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
