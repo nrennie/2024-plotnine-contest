@@ -368,7 +368,7 @@ We still need to add the caption, and the coloured text as an alternative to a t
 
 ## Applying text styling with `highlight-text`
 
-We start by converting from a `plotnine` plot to a `matplotlib` plot using the `draw()` function. We also set the size and resolution (`dpi`) of the plot. The `plt.gca()` extracts the axes from the existing `plotnine` plot.
+We start by converting from a `plotnine` plot to a `matplotlib` plot using the `draw()` function. We can also set the size of the plot (and resolution if you want using `fig.set_dpi(300)`). The `plt.gca()` extracts the axes from the existing `plotnine` plot.
 
 The `ax_text()` function from `highlight-text` adds text at the desired x- and y- coordinates, where the coordinates are based on the data range in the original plot. The `vsep` argument controls the line spacing, and `fontname` is used instead of `family`, but otherwise the arguments work similarly as in `plotnine`. We use the `ax_text()` function twice - once to add the coloured annotation, and once to add the caption. Finally, we show the plot.
 
@@ -377,7 +377,6 @@ The `ax_text()` function from `highlight-text` adds text at the desired x- and y
 # Convert to matplotlib and set plot options
 fig = p.draw()
 fig.set_size_inches(8, 6, forward=True)
-fig.set_dpi(300)
 ax = plt.gca()
 # add coloured text to annotation
 ht.ax_text(
